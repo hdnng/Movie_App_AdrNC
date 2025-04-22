@@ -1,0 +1,150 @@
+package com.example.movieapp;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+import com.example.movieapp.model.Type;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+
+public class DetailTypeActivity extends AppCompatActivity {
+    EditText edtNameDetailType,edtNewNameDetailType;
+    Button btnBack,btnUpdate,btnDelete;
+    String idType ="";
+    String nameType ="";
+    Context context = this;
+    FirebaseFirestore database;
+    String id ="";
+    Type type = null;
+    ArrayList<String> typeNames;
+    ArrayAdapter<String> adapter;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_detail_type);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        getView();
+        event();
+    }
+    public void getView(){
+        edtNameDetailType = findViewById(R.id.edt_nameDetailType);
+        edtNewNameDetailType = findViewById(R.id.edt_newnameDetailType);
+        btnBack = findViewById(R.id.btn_backDetailType);
+        btnUpdate = findViewById(R.id.btn_updatedType);
+        btnDelete = findViewById(R.id.btn_deletedType);
+        // Nhận thông tin từ Intent
+        idType = getIntent().getStringExtra("idType");
+        nameType = getIntent().getStringExtra("nameType");
+        if(!nameType.isEmpty()){
+            edtNameDetailType.setText(nameType);
+        }
+        database = FirebaseFirestore.getInstance();
+    }
+    public boolean check(){
+        String newname = edtNewNameDetailType.getText().toString().trim();
+        String name = edtNameDetailType.getText().toString().trim();
+        if(newname.compareTo(name)==0){
+            Toast.makeText(context, "Tên mới đang trùng với tên cũ", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(newname.isEmpty()){
+            Toast.makeText(context, "Không được để trống", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+
+    public void updateType(){
+        //Dua du lieu can update
+        id = idType;
+        type = new Type(id ,edtNewNameDetailType.getText().toString().trim());
+        database.collection("TYPE")//Ten bang dl
+                .document(type.getIdType())//Lay dong can update
+                .update(type.convertHashMap())//update
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(context,"Sua thanh cong",Toast.LENGTH_LONG).show();
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context,"Sua that bai",Toast.LENGTH_LONG).show();
+
+                    }
+                });
+    }
+
+    public void deleteType(){
+        id = idType;
+        database.collection("TYPE")
+                .document(id)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(context,"Xoa thanh cong",Toast.LENGTH_LONG).show();
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(context,"Xoa that bai",Toast.LENGTH_LONG).show();
+
+                    }
+                });
+    }
+
+    public void event(){
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(DetailTypeActivity.this, TypeActivity.class));
+                finish();
+            }
+        });
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(check()){
+                    updateType();
+                    startActivity(new Intent(DetailTypeActivity.this, TypeActivity.class));
+                    finish();
+                }
+            }
+        });
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteType();
+                startActivity(new Intent(DetailTypeActivity.this, TypeActivity.class));
+                finish();
+            }
+        });
+    }
+}
