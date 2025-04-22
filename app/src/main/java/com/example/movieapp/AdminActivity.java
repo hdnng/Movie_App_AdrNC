@@ -2,6 +2,7 @@ package com.example.movieapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -16,7 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdminActivity extends AppCompatActivity {
 
-    Button btnLogout;
+    Button btnLogout,btnManageGenres;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,13 +26,19 @@ public class AdminActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin);
 
         btnLogout = findViewById(R.id.btnLogout);
-
+        btnManageGenres = findViewById(R.id.btnManageGenres);
         btnLogout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(AdminActivity.this, LoginActivity.class));
             finish();
         });
-
+        btnManageGenres.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(AdminActivity.this, TypeActivity.class));
+                finish();
+            }
+        });
 
     }
 

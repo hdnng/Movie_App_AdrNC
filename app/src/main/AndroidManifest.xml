@@ -15,6 +15,15 @@
         android:theme="@style/Theme.MovieApp"
         tools:targetApi="31">
         <activity
+            android:name=".DetailTypeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CreateTypeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TypeActivity"
+            android:exported="false" />
+        <activity
             android:name=".AdminActivity"
             android:exported="false" />
         <activity
