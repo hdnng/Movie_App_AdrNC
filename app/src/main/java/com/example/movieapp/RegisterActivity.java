@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -20,6 +21,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     EditText email, password, comfirmPassword, username;
     Button btnRegister;
+    TextView txtLogin;
     FirebaseAuth mAuth;
     FirebaseFirestore db;
 
@@ -34,9 +36,14 @@ public class RegisterActivity extends AppCompatActivity {
         comfirmPassword = findViewById(R.id.confirmPassword);
         username = findViewById(R.id.username);
         btnRegister = findViewById(R.id.btnRegister);
+        txtLogin = findViewById(R.id.txtLogin);
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+
+        txtLogin.setOnClickListener(v -> {
+            startActivity(new Intent(this, LoginActivity.class));
+        });
 
         btnRegister.setOnClickListener(v -> {
             String userEmail = email.getText().toString().trim();
