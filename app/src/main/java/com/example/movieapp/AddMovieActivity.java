@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.movieapp.adapter.EpisodeAdapter;
 import com.example.movieapp.model.Episode;
+import com.example.movieapp.model.Movie;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -178,18 +179,12 @@ public class AddMovieActivity extends AppCompatActivity {
         int year = Integer.parseInt(edtYear.getText().toString());
         String thumbnail = edtThumbnail.getText().toString();
         boolean isSeries = chkIsSeries.isChecked();
+        String videoUrl = isSeries ? null : edtVideoUrl.getText().toString();
+        List<String> selectedTypeNames = new ArrayList<>(List.of(tvSelectTypes.getText().toString().split("\\s*,\\s*")));
 
-        Map<String, Object> movie = new HashMap<>();
-        movie.put("title", title);
-        movie.put("description", description);
-        movie.put("year", year);
-        movie.put("thumbnail", thumbnail);
-        movie.put("isSeries", isSeries);
-        movie.put("typeId", selectedTypeIds);
-        movie.put("typeName", new ArrayList<>(List.of(tvSelectTypes.getText().toString().split("\\s*,\\s*"))));
-        movie.put("createdAt", FieldValue.serverTimestamp());
+        // Tạo đối tượng Movie
+        Movie movie = new Movie(title, description, year, thumbnail, isSeries, selectedTypeIds, selectedTypeNames, videoUrl);
 
-        // Lưu thông tin phim vào collection "MOVIES"
         db.collection("MOVIES").add(movie).addOnSuccessListener(docRef -> {
             if (isSeries) {
                 if (episodeList != null && !episodeList.isEmpty()) {
@@ -202,7 +197,6 @@ public class AddMovieActivity extends AppCompatActivity {
                         episodeDataList.add(episodeData);
                     }
 
-                    // Đếm số tập cần lưu
                     final int[] counter = {0};
                     for (Map<String, Object> episodeData : episodeDataList) {
                         docRef.collection("EPISODES").add(episodeData)
@@ -210,7 +204,7 @@ public class AddMovieActivity extends AppCompatActivity {
                                     counter[0]++;
                                     if (counter[0] == episodeDataList.size()) {
                                         Toast.makeText(this, "Đã lưu phim bộ cùng các tập!", Toast.LENGTH_SHORT).show();
-                                        clearForm(); // GỌI Ở ĐÂY
+                                        clearForm();
                                     }
                                 })
                                 .addOnFailureListener(e -> {
@@ -221,20 +215,14 @@ public class AddMovieActivity extends AppCompatActivity {
                     Toast.makeText(this, "Không có tập phim nào để lưu.", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                docRef.update("videoUrl", edtVideoUrl.getText().toString())
-                        .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(this, "Đã lưu phim lẻ!", Toast.LENGTH_SHORT).show();
-                            clearForm(); // GỌI Ở ĐÂY
-                        })
-                        .addOnFailureListener(e -> Toast.makeText(this, "Lỗi lưu phim lẻ: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                Toast.makeText(this, "Đã lưu phim lẻ!", Toast.LENGTH_SHORT).show();
+                clearForm();
             }
         }).addOnFailureListener(e -> {
             Toast.makeText(this, "Lỗi lưu phim: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
-
-
-
     }
+
 
     private void clearForm() {
         edtTitle.setText("");
