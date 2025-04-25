@@ -17,10 +17,10 @@
         android:layout_marginBottom="32dp"/>
 
     <Button
-        android:id="@+id/btnManageMovies"
+        android:id="@+id/btnAddMovies"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Quản lý Phim"
+        android:text="Thêm phim"
         android:layout_marginBottom="16dp"/>
 
     <Button
@@ -29,6 +29,13 @@
         android:layout_height="wrap_content"
         android:text="Quản lý Thể loại"
         android:layout_marginBottom="32dp"/>
+
+    <Button
+        android:id="@+id/btnManageMovies"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quản lý Phim"
+        android:layout_marginBottom="16dp"/>
 
     <Button
         android:id="@+id/btnLogout"

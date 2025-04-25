@@ -17,7 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdminActivity extends AppCompatActivity {
 
-    Button btnLogout,btnManageGenres;
+    Button btnLogout, btnManageGenres, btnManageMovies, btnAddMovies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +27,8 @@ public class AdminActivity extends AppCompatActivity {
 
         btnLogout = findViewById(R.id.btnLogout);
         btnManageGenres = findViewById(R.id.btnManageGenres);
+
+        btnAddMovies = findViewById(R.id.btnAddMovies);
         btnLogout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(AdminActivity.this, LoginActivity.class));
@@ -39,6 +41,15 @@ public class AdminActivity extends AppCompatActivity {
                 finish();
             }
         });
+        btnAddMovies.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(AdminActivity.this, AddMovieActivity.class));
+                finish();
+            }
+        });
+
+
 
     }
 
