@@ -56,6 +56,8 @@ public class DetailTypeActivity extends AppCompatActivity {
         // Nhận thông tin từ Intent
         idType = getIntent().getStringExtra("idType");
         nameType = getIntent().getStringExtra("nameType");
+        Toast.makeText(context, "IdType"+idType, Toast.LENGTH_SHORT).show();
+
         if(!nameType.isEmpty()){
             edtNameDetailType.setText(nameType);
         }
