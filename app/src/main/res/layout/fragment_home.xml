@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical"
+    tools:context=".fragment.Fragment_Home">
+
+    <!-- TODO: Update blank fragment layout -->
+    <FrameLayout
+        android:id="@+id/featuredMovieContainer"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="8dp"/>
+
+    <!-- Thể loại 1 -->
+    <TextView
+        android:id="@+id/genreTitle1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thể loại 1"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:padding="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerGenre1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal"
+        android:nestedScrollingEnabled="false" />
+
+    <!-- Thể loại 2 -->
+    <TextView
+        android:id="@+id/genreTitle2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Thể loại 2"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:padding="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerGenre2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:nestedScrollingEnabled="false" />
+
+</LinearLayout>

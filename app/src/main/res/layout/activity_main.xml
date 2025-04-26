@@ -22,47 +22,50 @@
             <include layout="@layout/toolbar" />
 
             <!-- Phim nổi bật (ngẫu nhiên 1 phim) -->
-            <FrameLayout
-                android:id="@+id/featuredMovieContainer"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_margin="8dp"/>
+<!--            <FrameLayout-->
+<!--                android:id="@+id/featuredMovieContainer"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="200dp"-->
+<!--                android:layout_margin="8dp"/>-->
 
-            <!-- Thể loại 1 -->
-            <TextView
-                android:id="@+id/genreTitle1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Thể loại 1"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:padding="8dp" />
+<!--            &lt;!&ndash; Thể loại 1 &ndash;&gt;-->
+<!--            <TextView-->
+<!--                android:id="@+id/genreTitle1"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Thể loại 1"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="18sp"-->
+<!--                android:padding="8dp" />-->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerGenre1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:orientation="horizontal"
-                android:nestedScrollingEnabled="false" />
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/recyclerGenre1"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginBottom="16dp"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:nestedScrollingEnabled="false" />-->
 
-            <!-- Thể loại 2 -->
-            <TextView
-                android:id="@+id/genreTitle2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Thể loại 2"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:padding="8dp" />
+<!--            &lt;!&ndash; Thể loại 2 &ndash;&gt;-->
+<!--            <TextView-->
+<!--                android:id="@+id/genreTitle2"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Thể loại 2"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textSize="18sp"-->
+<!--                android:padding="8dp" />-->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerGenre2"
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/recyclerGenre2"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:nestedScrollingEnabled="false" />-->
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:nestedScrollingEnabled="false" />
-
+                android:layout_height="match_parent"/>
         </LinearLayout>
 
 

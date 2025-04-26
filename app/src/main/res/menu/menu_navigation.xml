@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_home"
+        android:title="Trang chủ"
+        />
+    <item android:id="@+id/menu_movie_single"
+        android:title="Phim lẻ"
+        />
+    <item android:id="@+id/menu_movie_series"
+        android:title="Phim bộ"
+        />
+    <item android:id="@+id/menu_movie_type"
+        android:title="Thể loại"/>
+    <item android:id="@+id/menu_movie_favorite"
+        android:title="Yêu thích"
+       />
+    <item android:id="@+id/menu_logout"
+        android:title="Đăng xuất"/>
+</menu>

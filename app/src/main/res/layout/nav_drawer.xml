@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,12 +21,18 @@
             android:text="hello"/>
 
     </LinearLayout>
-
-    <TextView
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/menu_navigation"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="đăng xuất"
-        android:textSize="20dp"
-        android:id="@+id/logout"/>
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        app:menu="@menu/menu_navigation" />
+
+    <!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="đăng xuất"-->
+<!--        android:textSize="20dp"-->
+<!--        android:id="@+id/logout"/>-->
 
 </LinearLayout>
