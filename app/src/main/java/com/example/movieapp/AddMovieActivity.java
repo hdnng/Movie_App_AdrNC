@@ -9,24 +9,17 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.MultiAutoCompleteTextView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.movieapp.adapter.EpisodeAdapter;
 import com.example.movieapp.model.Episode;
 import com.example.movieapp.model.Movie;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -36,33 +29,33 @@ import java.util.List;
 import java.util.Map;
 
 public class AddMovieActivity extends AppCompatActivity {
+
     EditText edtTitle, edtDescription, edtYear, edtThumbnail, edtVideoUrl;
     CheckBox chkIsSeries;
     LinearLayout layoutEpisodeList;
     RecyclerView rvEpisodes;
-    Button btnAddEpisode, btnSaveMovie;
+    Button btnAddEpisode, btnSaveMovie, btnBackToAdmin;
+    TextView tvSelectTypes;
 
+    List<Episode> episodeList = new ArrayList<>();
+    EpisodeAdapter episodeAdapter;
 
     ArrayList<String> selectedTypeIds = new ArrayList<>();
     ArrayList<String> typeNames = new ArrayList<>();
     ArrayList<String> typeIds = new ArrayList<>();
-    ArrayAdapter<String> typeAdapter;
-
-    TextView tvSelectTypes;
     boolean[] checkedItems;
 
-
-    List<Episode> episodeList = new ArrayList<>();
-
-    EpisodeAdapter episodeAdapter;
-
-    FirebaseFirestore db;
+    FirebaseFirestore db;  // Firestore
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_movie);
 
+        // Khởi tạo Firestore
+        db = FirebaseFirestore.getInstance();
+
+        // Ánh xạ view
         edtTitle = findViewById(R.id.edtTitle);
         edtDescription = findViewById(R.id.edtDescription);
         edtYear = findViewById(R.id.edtYear);
@@ -73,81 +66,74 @@ public class AddMovieActivity extends AppCompatActivity {
         rvEpisodes = findViewById(R.id.rvEpisodes);
         btnAddEpisode = findViewById(R.id.btnAddEpisode);
         btnSaveMovie = findViewById(R.id.btnSaveMovie);
-
+        btnBackToAdmin = findViewById(R.id.btnBackToAdmin);
         tvSelectTypes = findViewById(R.id.tvSelectTypes);
-        tvSelectTypes.setOnClickListener(v -> showTypeSelectionDialog());
 
-
-        typeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, typeNames);
-
-
+        // Load thể loại
         loadTypes();
 
-        db = FirebaseFirestore.getInstance();
-
+        // Cài đặt RecyclerView cho tập phim
         episodeAdapter = new EpisodeAdapter(episodeList);
         rvEpisodes.setLayoutManager(new LinearLayoutManager(this));
         rvEpisodes.setAdapter(episodeAdapter);
 
-        chkIsSeries.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+        // Sự kiện chọn thể loại
+        tvSelectTypes.setOnClickListener(v -> showTypeSelectionDialog());
+
+        // Checkbox phim bộ/phim lẻ
+        chkIsSeries.setOnCheckedChangeListener((buttonView, isChecked) -> {
             edtVideoUrl.setVisibility(isChecked ? View.GONE : View.VISIBLE);
             layoutEpisodeList.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
+        // Thêm tập
         btnAddEpisode.setOnClickListener(v -> showAddEpisodeDialog());
 
+        // Lưu phim
         btnSaveMovie.setOnClickListener(v -> saveMovieToFirestore());
 
-        Button btnBackToAdmin = findViewById(R.id.btnBackToAdmin);
+        // Quay lại Admin
         btnBackToAdmin.setOnClickListener(v -> {
             startActivity(new Intent(AddMovieActivity.this, AdminActivity.class));
             finish();
         });
     }
 
+    private void loadTypes() {
+        db.collection("TYPE").get().addOnSuccessListener(querySnapshot -> {
+            typeNames.clear();
+            typeIds.clear();
+            for (QueryDocumentSnapshot doc : querySnapshot) {
+                typeNames.add(doc.getString("nameType"));
+                typeIds.add(doc.getId());
+            }
+        }).addOnFailureListener(e ->
+                Toast.makeText(this, "Lỗi tải thể loại: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+        );
+    }
+
     private void showTypeSelectionDialog() {
         checkedItems = new boolean[typeNames.size()];
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Chọn thể loại");
         builder.setMultiChoiceItems(typeNames.toArray(new String[0]), checkedItems, (dialog, which, isChecked) -> {
             checkedItems[which] = isChecked;
         });
-
         builder.setPositiveButton("OK", (dialog, which) -> {
             selectedTypeIds.clear();
-            ArrayList<String> selectedTypeDisplayNames = new ArrayList<>();
+            List<String> selectedTypeDisplayNames = new ArrayList<>();
             for (int i = 0; i < checkedItems.length; i++) {
                 if (checkedItems[i]) {
                     selectedTypeIds.add(typeIds.get(i));
                     selectedTypeDisplayNames.add(typeNames.get(i));
                 }
             }
-            tvSelectTypes.setText(android.text.TextUtils.join(", ", selectedTypeDisplayNames));
+            tvSelectTypes.setText(String.join(", ", selectedTypeDisplayNames));
         });
-
         builder.setNegativeButton("Hủy", null);
         builder.show();
     }
-
-
-
-    private void loadTypes() {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("TYPE").get().addOnSuccessListener(querySnapshot -> {
-            typeNames.clear();
-            typeIds.clear();
-            for (QueryDocumentSnapshot doc : querySnapshot) {
-                String name = doc.getString("nameType");
-                String id = doc.getId();
-                typeNames.add(name);
-                typeIds.add(id);
-            }
-            typeAdapter.notifyDataSetChanged();
-        }).addOnFailureListener(e -> {
-            Toast.makeText(this, "Lỗi tải thể loại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
-    }
-
 
     private void showAddEpisodeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -160,69 +146,69 @@ public class AddMovieActivity extends AppCompatActivity {
         builder.setView(view);
         builder.setPositiveButton("Thêm", (dialog, which) -> {
             int episodeNum = episodeList.size() + 1;
-            String title = edtEpTitle.getText().toString();
-            String url = edtEpUrl.getText().toString();
+            String title = edtEpTitle.getText().toString().trim();
+            String url = edtEpUrl.getText().toString().trim();
 
-            Episode episode = new Episode(episodeNum, title, url);
-            episodeList.add(episode);
-            episodeAdapter.notifyDataSetChanged();  // Cập nhật RecyclerView
+            if (!title.isEmpty() && !url.isEmpty()) {
+                episodeList.add(new Episode(episodeNum, title, url));
+                episodeAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin tập!", Toast.LENGTH_SHORT).show();
+            }
         });
-
-
         builder.setNegativeButton("Hủy", null);
         builder.show();
     }
 
     private void saveMovieToFirestore() {
-        String title = edtTitle.getText().toString();
-        String description = edtDescription.getText().toString();
-        int year = Integer.parseInt(edtYear.getText().toString());
-        String thumbnail = edtThumbnail.getText().toString();
+        String title = edtTitle.getText().toString().trim();
+        String description = edtDescription.getText().toString().trim();
+        String yearStr = edtYear.getText().toString().trim();
+        String thumbnail = edtThumbnail.getText().toString().trim();
         boolean isSeries = chkIsSeries.isChecked();
-        String videoUrl = isSeries ? null : edtVideoUrl.getText().toString();
+        String videoUrl = isSeries ? null : edtVideoUrl.getText().toString().trim();
+
+        if (title.isEmpty() || description.isEmpty() || yearStr.isEmpty() || thumbnail.isEmpty() ||
+                (!isSeries && (videoUrl == null || videoUrl.isEmpty()))) {
+            Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int year = Integer.parseInt(yearStr);
+
         List<String> selectedTypeNames = new ArrayList<>(List.of(tvSelectTypes.getText().toString().split("\\s*,\\s*")));
 
-        // Tạo đối tượng Movie
-        Movie movie = new Movie(title, description, year, thumbnail, isSeries, selectedTypeIds, selectedTypeNames, videoUrl,episodeList);
+        Movie movie = new Movie("", title, description, year, thumbnail, isSeries, selectedTypeIds, selectedTypeNames, videoUrl);
 
         db.collection("MOVIES").add(movie).addOnSuccessListener(docRef -> {
-            if (isSeries) {
-                if (episodeList != null && !episodeList.isEmpty()) {
-                    List<Map<String, Object>> episodeDataList = new ArrayList<>();
-                    for (Episode ep : episodeList) {
-                        Map<String, Object> episodeData = new HashMap<>();
-                        episodeData.put("title", ep.getTitle());
-                        episodeData.put("episodeNumber", ep.getEpisodeNumber());
-                        episodeData.put("videoUrl", ep.getVideoUrl());
-                        episodeDataList.add(episodeData);
-                    }
+            if (isSeries && !episodeList.isEmpty()) {
+                List<Map<String, Object>> episodeDataList = new ArrayList<>();
+                for (Episode ep : episodeList) {
+                    Map<String, Object> data = new HashMap<>();
+                    data.put("title", ep.getTitle());
+                    data.put("episodeNumber", ep.getEpisodeNumber());
+                    data.put("videoUrl", ep.getVideoUrl());
+                    episodeDataList.add(data);
+                }
 
-                    final int[] counter = {0};
-                    for (Map<String, Object> episodeData : episodeDataList) {
-                        docRef.collection("EPISODES").add(episodeData)
-                                .addOnSuccessListener(doc -> {
-                                    counter[0]++;
-                                    if (counter[0] == episodeDataList.size()) {
-                                        Toast.makeText(this, "Đã lưu phim bộ cùng các tập!", Toast.LENGTH_SHORT).show();
-                                        clearForm();
-                                    }
-                                })
-                                .addOnFailureListener(e -> {
-                                    Log.e("Firestore", "Lỗi lưu tập phim: " + e.getMessage());
-                                });
-                    }
-                } else {
-                    Toast.makeText(this, "Không có tập phim nào để lưu.", Toast.LENGTH_SHORT).show();
+                final int[] counter = {0};
+                for (Map<String, Object> data : episodeDataList) {
+                    docRef.collection("EPISODES").add(data).addOnSuccessListener(doc -> {
+                        counter[0]++;
+                        if (counter[0] == episodeDataList.size()) {
+                            Toast.makeText(this, "Đã lưu phim bộ và các tập!", Toast.LENGTH_SHORT).show();
+                            clearForm();
+                        }
+                    }).addOnFailureListener(e -> Log.e("Firestore", "Lỗi lưu tập: " + e.getMessage()));
                 }
             } else {
                 Toast.makeText(this, "Đã lưu phim lẻ!", Toast.LENGTH_SHORT).show();
                 clearForm();
             }
-        }).addOnFailureListener(e -> {
-            Toast.makeText(this, "Lỗi lưu phim: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        });
+        }).addOnFailureListener(e ->
+                Toast.makeText(this, "Lỗi lưu phim: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+        );
     }
-
 
     private void clearForm() {
         edtTitle.setText("");
@@ -230,10 +216,9 @@ public class AddMovieActivity extends AppCompatActivity {
         edtYear.setText("");
         edtThumbnail.setText("");
         edtVideoUrl.setText("");
-        tvSelectTypes.setText("");
         chkIsSeries.setChecked(false);
+        tvSelectTypes.setText("");
         episodeList.clear();
         episodeAdapter.notifyDataSetChanged();
     }
-
 }

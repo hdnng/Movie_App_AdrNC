@@ -1,6 +1,8 @@
 package com.example.movieapp.model;
 
-public class Episode {
+import java.io.Serializable;
+
+public class Episode implements Serializable {
     private int episodeNumber;
     private String title;
     private String videoUrl;

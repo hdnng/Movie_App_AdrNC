@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.movieapp.adapter.MovieAdapter;
+import com.example.movieapp.model.Episode;
 import com.example.movieapp.model.Movie;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -105,14 +106,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void openDetail(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
+        intent.putExtra("movieId", movie.getId());
         intent.putExtra("title", movie.getTitle());
         intent.putExtra("description", movie.getDescription());
         intent.putExtra("year", movie.getYear());
         intent.putExtra("thumbnail", movie.getThumbnail());
         intent.putExtra("videoUrl", movie.getVideoUrl());
         intent.putExtra("isSeries", movie.isSeries());
-
-        // Truyền thêm thể loại
         intent.putStringArrayListExtra("genres", new ArrayList<>(movie.getTypeName()));
 
         startActivity(intent);
@@ -126,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
                     List<Movie> allMovies = new ArrayList<>();
                     for (QueryDocumentSnapshot doc : querySnapshot) {
                         Movie movie = doc.toObject(Movie.class);
+                        movie.setId(doc.getId());
                         allMovies.add(movie);
                     }
 

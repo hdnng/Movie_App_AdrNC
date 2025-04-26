@@ -58,5 +58,13 @@
             <!-- Các tập phim sẽ được thêm vào ở đây -->
         </LinearLayout>
 
+        <Button
+            android:id="@+id/btnPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Play"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"/> <!-- Ban đầu ẩn đi -->
+
     </LinearLayout>
 </ScrollView>

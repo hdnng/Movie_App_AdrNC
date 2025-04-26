@@ -3,6 +3,7 @@ package com.example.movieapp.model;
 import java.util.List;
 
 public class Movie {
+    private String id;
     private String title;
     private String description;
     private int year;
@@ -12,15 +13,12 @@ public class Movie {
     private List<String> typeName;
     private String videoUrl; // Dành cho phim lẻ
 
-
-    private List<Episode> episodes; // Danh sách các tập phim cho phim bộ
-
     public Movie() {
-        // Constructor rỗng cần thiết cho Firestore
     }
 
-    public Movie(String title, String description, int year, String thumbnail,
-                 boolean isSeries, List<String> typeId, List<String> typeName, String videoUrl, List<Episode> episodes) {
+    public Movie(String id, String title, String description, int year, String thumbnail,
+                 boolean isSeries, List<String> typeId, List<String> typeName, String videoUrl) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.year = year;
@@ -29,15 +27,14 @@ public class Movie {
         this.typeId = typeId;
         this.typeName = typeName;
         this.videoUrl = videoUrl;
-        this.episodes = episodes;
     }
 
-    public List<Episode> getEpisodes() {
-        return episodes;
+    public String getId() {
+        return id;
     }
 
-    public void setEpisodes(List<Episode> episodes) {
-        this.episodes = episodes;
+    public void setId(String id) {
+        this.id = id;
     }
 
     // Getter và Setter
