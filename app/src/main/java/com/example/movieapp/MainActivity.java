@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.movieapp.adapter.MovieAdapter;
-import com.example.movieapp.model.Episode;
 import com.example.movieapp.model.Movie;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -37,7 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     ImageView menu;
-    TextView  logout,hello;
+    TextView  hello;
+
+    LinearLayout logout;
     private List<Movie> movieList;
 
 
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         featuredMovieContainer = findViewById(R.id.featuredMovieContainer);
         genreTitle1 = findViewById(R.id.genreTitle1);
         genreTitle2 = findViewById(R.id.genreTitle2);
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         hello = findViewById(R.id.hello);
         movieList = new ArrayList<>();
         menu.setOnClickListener(view -> openDrawer(drawerLayout));
+
         logout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
@@ -130,6 +133,13 @@ public class MainActivity extends AppCompatActivity {
                         allMovies.add(movie);
                     }
 
+                    // Kiểm tra nếu không có phim nào trong danh sách
+                    if (allMovies.isEmpty()) {
+                        // Thông báo cho người dùng hoặc xử lý theo cách khác
+                        Toast.makeText(this, "Không có phim nào để hiển thị", Toast.LENGTH_SHORT).show();
+                        return;  // Dừng lại và không thực hiện tiếp các thao tác
+                    }
+
                     // Chọn 1 phim nổi bật ngẫu nhiên
                     int featuredIndex = (int)(Math.random() * allMovies.size());
                     Movie featuredMovie = allMovies.get(featuredIndex);
@@ -164,21 +174,28 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
+
     private void showFeaturedMovie(Movie movie) {
-        View view = getLayoutInflater().inflate(R.layout.item_featured_movie, featuredMovieContainer, false);
+        // Kiểm tra xem Activity có còn tồn tại không trước khi thực hiện Glide
+        if (!isFinishing() && !isDestroyed()) {
+            View view = getLayoutInflater().inflate(R.layout.item_featured_movie, featuredMovieContainer, false);
 
-        ImageView img = view.findViewById(R.id.imgThumbnail);
-        TextView title = view.findViewById(R.id.txtTitle);
+            ImageView img = view.findViewById(R.id.imgThumbnail);
+            TextView title = view.findViewById(R.id.txtTitle);
 
-        Glide.with(this).load(movie.getThumbnail()).into(img);
-        title.setText(movie.getTitle());
+            Glide.with(this)
+                    .load(movie.getThumbnail())
+                    .into(img);
+            title.setText(movie.getTitle());
 
-        // 👉 Bắt sự kiện click để mở chi tiết phim
-        view.setOnClickListener(v -> openDetail(movie));
+            // 👉 Bắt sự kiện click để mở chi tiết phim
+            view.setOnClickListener(v -> openDetail(movie));
 
-        featuredMovieContainer.removeAllViews();
-        featuredMovieContainer.addView(view);
+            featuredMovieContainer.removeAllViews();
+            featuredMovieContainer.addView(view);
+        }
     }
+
 
 
 

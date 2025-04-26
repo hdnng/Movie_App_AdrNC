@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,7 +21,7 @@ import java.util.ArrayList;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
-    TextView title, description, year, tvGenres;;
+    TextView title, description, year, tvGenres;
     ImageView thumbnail;
     Button btnPlay;
     LinearLayout episodesLayout;
@@ -45,10 +43,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         episodesLayout = findViewById(R.id.episodesLayout);
 
         // Lấy dữ liệu từ Intent
-
         Intent intent = getIntent();
 
-// Lấy thêm dữ liệu từ Intent
         boolean isSeries = intent.getBooleanExtra("isSeries", false);
         ArrayList<Episode> episodes = (ArrayList<Episode>) intent.getSerializableExtra("episodes"); // Nếu có
 
@@ -70,11 +66,18 @@ public class MovieDetailActivity extends AppCompatActivity {
                                 Long episodeNumber = doc.getLong("episodeNumber");
                                 String videoUrl = doc.getString("videoUrl");
 
-                                TextView episodeText = new TextView(this);
-                                episodeText.setText(episodeNumber + ". " + title);
-                                episodeText.setTextSize(16);
-                                episodeText.setPadding(8, 8, 8, 8);
-                                episodesLayout.addView(episodeText);
+                                // Tạo nút Play cho mỗi tập
+                                Button episodeButton = new Button(this);
+                                episodeButton.setText(episodeNumber + ". " + title);
+                                episodeButton.setTextSize(16);
+                                episodeButton.setPadding(8, 8, 8, 8);
+                                episodeButton.setOnClickListener(v -> {
+                                    Intent playIntent = new Intent(MovieDetailActivity.this, PlayerActivity.class);
+                                    playIntent.putExtra("videoUrl", videoUrl); // Gửi videoUrl của tập phim
+                                    startActivity(playIntent);
+                                });
+
+                                episodesLayout.addView(episodeButton);
                             }
                         }
                     })
@@ -84,17 +87,13 @@ public class MovieDetailActivity extends AppCompatActivity {
         } else {
             // Nếu là phim lẻ thì hiện nút Play
             btnPlay.setVisibility(View.VISIBLE);
-//            btnPlay.setOnClickListener(v -> {
-//                // Ở đây bạn có thể mở video bằng intent hoặc chuyển qua PlayerActivity
-//                String videoUrl = intent.getStringExtra("videoUrl");
-//                // Ví dụ: mở trang phát video
-//                Intent playIntent = new Intent(MovieDetailActivity.this, PlayerActivity.class);
-//                playIntent.putExtra("videoUrl", videoUrl);
-//                startActivity(playIntent);
-//            });
+            btnPlay.setOnClickListener(v -> {
+                String videoUrl = intent.getStringExtra("videoUrl");
+                Intent playIntent = new Intent(MovieDetailActivity.this, PlayerActivity.class);
+                playIntent.putExtra("videoUrl", videoUrl);
+                startActivity(playIntent);
+            });
         }
-
-
 
         String movieTitle = getIntent().getStringExtra("title");
         String movieDesc = getIntent().getStringExtra("description");
@@ -115,5 +114,4 @@ public class MovieDetailActivity extends AppCompatActivity {
         year.setText(String.valueOf(movieYear));
         Glide.with(this).load(movieThumb).into(thumbnail);
     }
-
 }
