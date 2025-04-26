@@ -54,7 +54,7 @@ public class TypeActivity extends AppCompatActivity {
         lvType = findViewById(R.id.lv_ListType);
 
         typeNames = new ArrayList<>();
-        typeIds = new ArrayList<>(); // 👉 khởi tạo luôn list id
+        typeIds = new ArrayList<>(); //  khởi tạo luôn list id
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, typeNames);
         lvType.setAdapter(adapter);
@@ -67,7 +67,7 @@ public class TypeActivity extends AppCompatActivity {
         database.collection("TYPE").get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     typeNames.clear();
-                    typeIds.clear(); // 👉 clear id luôn để tránh lỗi trùng
+                    typeIds.clear(); // clear id luôn để tránh lỗi trùng
 
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Type type = document.toObject(Type.class);
@@ -75,7 +75,7 @@ public class TypeActivity extends AppCompatActivity {
                         String nameType = type.getNameType();
 
                         typeNames.add(nameType);
-                        typeIds.add(idType); // 👉 lưu id ứng với vị trí
+                        typeIds.add(idType); // lưu id ứng với vị trí
                     }
 
                     adapter.notifyDataSetChanged();
@@ -85,7 +85,7 @@ public class TypeActivity extends AppCompatActivity {
                     Toast.makeText(context, "Tải thất bại: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
 
-        // 👉 Set OnItemClickListener ở ngoài
+        //  Set OnItemClickListener ở ngoài
         lvType.setOnItemClickListener((parent, view, position, id) -> {
             String selectedTypeName = typeNames.get(position);
             String selectedTypeId = typeIds.get(position);
