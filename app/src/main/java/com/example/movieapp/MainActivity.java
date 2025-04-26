@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,10 +13,22 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.movieapp.adapter.MovieAdapter;
+import com.example.movieapp.model.Movie;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +37,17 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     ImageView menu;
     TextView  logout,hello;
+    private List<Movie> movieList;
+
+
+
+
+    private RecyclerView recyclerGenre1, recyclerGenre2;
+    private TextView genreTitle1, genreTitle2;
+    private FrameLayout featuredMovieContainer;
+
+    private MovieAdapter adapterGenre1, adapterGenre2;
+    private List<Movie> listGenre1, listGenre2;
 
 
     FirebaseFirestore db;
@@ -32,36 +56,37 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        featuredMovieContainer = findViewById(R.id.featuredMovieContainer);
+        genreTitle1 = findViewById(R.id.genreTitle1);
+        genreTitle2 = findViewById(R.id.genreTitle2);
+        recyclerGenre1 = findViewById(R.id.recyclerGenre1);
+        recyclerGenre2 = findViewById(R.id.recyclerGenre2);
+        listGenre1 = new ArrayList<>();
+        listGenre2 = new ArrayList<>();
+        adapterGenre1 = new MovieAdapter(listGenre1, movie -> openDetail(movie));
+        adapterGenre2 = new MovieAdapter(listGenre2, movie -> openDetail(movie));
 
-
+        recyclerGenre1.setAdapter(adapterGenre1);
+        recyclerGenre2.setAdapter(adapterGenre2);
+        recyclerGenre1.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerGenre2.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         menu = findViewById(R.id.menu);
         logout = findViewById(R.id.logout);
         drawerLayout = findViewById(R.id.drawerLayout);
         hello = findViewById(R.id.hello);
-
-
-        menu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openDrawer(drawerLayout);
-            }
-        });
-
+        movieList = new ArrayList<>();
+        menu.setOnClickListener(view -> openDrawer(drawerLayout));
         logout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         });
 
-
-
-
         db = FirebaseFirestore.getInstance();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String uid = user.getUid();
-            // Truy vấn Firestore để lấy username
             db.collection("users").document(uid)
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
@@ -74,7 +99,88 @@ public class MainActivity extends AppCompatActivity {
                         hello.setText("Lỗi khi lấy thông tin người dùng");
                     });
         }
+
+        loadMovies();  // Thêm gọi hàm tải phim
     }
+
+    private void openDetail(Movie movie) {
+        Intent intent = new Intent(this, MovieDetailActivity.class);
+        intent.putExtra("title", movie.getTitle());
+        intent.putExtra("description", movie.getDescription());
+        intent.putExtra("year", movie.getYear());
+        intent.putExtra("thumbnail", movie.getThumbnail());
+        intent.putExtra("videoUrl", movie.getVideoUrl());
+        intent.putExtra("isSeries", movie.isSeries());
+
+        // Truyền thêm thể loại
+        intent.putStringArrayListExtra("genres", new ArrayList<>(movie.getTypeName()));
+
+        startActivity(intent);
+    }
+
+
+    private void loadMovies() {
+        db.collection("MOVIES")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Movie> allMovies = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        Movie movie = doc.toObject(Movie.class);
+                        allMovies.add(movie);
+                    }
+
+                    // Chọn 1 phim nổi bật ngẫu nhiên
+                    int featuredIndex = (int)(Math.random() * allMovies.size());
+                    Movie featuredMovie = allMovies.get(featuredIndex);
+                    showFeaturedMovie(featuredMovie);  // Xử lý hiển thị phim nổi bật
+
+                    // Lấy tất cả thể loại từ danh sách phim
+                    Set<String> allGenres = new HashSet<>();
+                    for (Movie movie : allMovies) {
+                        allGenres.addAll(movie.getTypeName());  // typeName là List<String>
+                    }
+
+                    // Chọn ngẫu nhiên 2 thể loại
+                    List<String> genreList = new ArrayList<>(allGenres);
+                    Collections.shuffle(genreList);
+                    String genre1 = genreList.get(0);
+                    String genre2 = genreList.size() > 1 ? genreList.get(1) : genreList.get(0);
+
+                    genreTitle1.setText(genre1);
+                    genreTitle2.setText(genre2);
+
+                    // Lọc phim theo thể loại
+                    for (Movie movie : allMovies) {
+                        if (movie.getTypeName().contains(genre1)) listGenre1.add(movie);
+                        if (movie.getTypeName().contains(genre2)) listGenre2.add(movie);
+                    }
+
+                    adapterGenre1.notifyDataSetChanged();
+                    adapterGenre2.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Lỗi tải phim: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
+    private void showFeaturedMovie(Movie movie) {
+        View view = getLayoutInflater().inflate(R.layout.item_featured_movie, featuredMovieContainer, false);
+
+        ImageView img = view.findViewById(R.id.imgThumbnail);
+        TextView title = view.findViewById(R.id.txtTitle);
+
+        Glide.with(this).load(movie.getThumbnail()).into(img);
+        title.setText(movie.getTitle());
+
+        // 👉 Bắt sự kiện click để mở chi tiết phim
+        view.setOnClickListener(v -> openDetail(movie));
+
+        featuredMovieContainer.removeAllViews();
+        featuredMovieContainer.addView(view);
+    }
+
+
+
 
     public static void openDrawer(DrawerLayout drawerLayout)
     {

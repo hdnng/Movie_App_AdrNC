@@ -12,12 +12,15 @@ public class Movie {
     private List<String> typeName;
     private String videoUrl; // Dành cho phim lẻ
 
+
+    private List<Episode> episodes; // Danh sách các tập phim cho phim bộ
+
     public Movie() {
         // Constructor rỗng cần thiết cho Firestore
     }
 
     public Movie(String title, String description, int year, String thumbnail,
-                 boolean isSeries, List<String> typeId, List<String> typeName, String videoUrl) {
+                 boolean isSeries, List<String> typeId, List<String> typeName, String videoUrl, List<Episode> episodes) {
         this.title = title;
         this.description = description;
         this.year = year;
@@ -26,6 +29,15 @@ public class Movie {
         this.typeId = typeId;
         this.typeName = typeName;
         this.videoUrl = videoUrl;
+        this.episodes = episodes;
+    }
+
+    public List<Episode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(List<Episode> episodes) {
+        this.episodes = episodes;
     }
 
     // Getter và Setter

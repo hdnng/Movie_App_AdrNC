@@ -183,7 +183,7 @@ public class AddMovieActivity extends AppCompatActivity {
         List<String> selectedTypeNames = new ArrayList<>(List.of(tvSelectTypes.getText().toString().split("\\s*,\\s*")));
 
         // Tạo đối tượng Movie
-        Movie movie = new Movie(title, description, year, thumbnail, isSeries, selectedTypeIds, selectedTypeNames, videoUrl);
+        Movie movie = new Movie(title, description, year, thumbnail, isSeries, selectedTypeIds, selectedTypeNames, videoUrl,episodeList);
 
         db.collection("MOVIES").add(movie).addOnSuccessListener(docRef -> {
             if (isSeries) {
