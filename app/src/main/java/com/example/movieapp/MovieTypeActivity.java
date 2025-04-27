@@ -3,6 +3,8 @@ package com.example.movieapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ public class MovieTypeActivity extends AppCompatActivity {
     ImageView menu;
     TextView hello;
 
+    EditText searchEditText;
     LinearLayout logout,movie,series,type,favorite,home;
 
     FirebaseFirestore db;
@@ -30,6 +33,9 @@ public class MovieTypeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_movie_type);
+
+        searchEditText = findViewById(R.id.searchEditText);
+        searchEditText.setVisibility(View.GONE);
 
         menu = findViewById(R.id.menu);
         logout = findViewById(R.id.logout);

@@ -63,6 +63,16 @@
                 android:orientation="horizontal"
                 android:nestedScrollingEnabled="false" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerSearchResults"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:padding="8dp"
+                android:layout_marginTop="16dp"
+                />
+
+
         </LinearLayout>
 
 

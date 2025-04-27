@@ -3,6 +3,8 @@ package com.example.movieapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ public class MovieSeriesActivity extends AppCompatActivity {
     DrawerLayout drawerLayoutSeries;
     ImageView menu;
     TextView hello;
+    EditText searchEditText;
 
     //Hiện Movie
     RecyclerView recyclerView;
@@ -48,6 +51,8 @@ public class MovieSeriesActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.recyclerViewMoviesSeries);
 
+        searchEditText = findViewById(R.id.searchEditText);
+        searchEditText.setVisibility(View.GONE);
         //click menu
         menu = findViewById(R.id.menu);
         logout = findViewById(R.id.logout);

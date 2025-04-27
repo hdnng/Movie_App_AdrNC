@@ -13,4 +13,20 @@
         android:id="@+id/menu"
         android:src="@drawable/menu"/>
 
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/background"
+    android:hint="Tìm kiếm phim..."
+    android:padding="10dp"
+    android:textColor="@android:color/white"
+    android:textColorHint="@android:color/darker_gray"
+    android:inputType="text"
+    android:drawableLeft="@drawable/ic_search"
+    android:layout_marginStart="10dp"/>
+
+
+
 </LinearLayout>
