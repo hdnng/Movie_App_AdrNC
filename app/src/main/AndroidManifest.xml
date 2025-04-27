@@ -15,9 +15,21 @@
         android:theme="@style/Theme.MovieApp"
         tools:targetApi="31">
         <activity
-            android:name=".PlayerActivity"
-            android:screenOrientation="landscape"
+            android:name=".MovieFavoriteActivity"
             android:exported="false" />
+        <activity
+            android:name=".MovieTypeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MovieSeriesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MovieSingleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PlayerActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".MovieDetailActivity"
             android:exported="false" />

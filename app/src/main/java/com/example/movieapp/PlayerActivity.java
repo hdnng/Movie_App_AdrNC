@@ -8,19 +8,14 @@ import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlayerActivity extends AppCompatActivity {
 
-    private YouTubePlayerView youTubePlayerView;
+//    private YouTubePlayerView youTubePlayerView;
     private VideoView v;
     private String videoId;
 

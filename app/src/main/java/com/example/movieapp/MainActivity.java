@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView menu;
     TextView  hello;
 
-    LinearLayout logout;
+    LinearLayout logout,movie,series,type,favorite;
     private List<Movie> movieList;
 
 
@@ -75,11 +75,31 @@ public class MainActivity extends AppCompatActivity {
         recyclerGenre2.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         menu = findViewById(R.id.menu);
         logout = findViewById(R.id.logout);
+        movie = findViewById(R.id.movie);
+        type = findViewById(R.id.type);
+        series = findViewById(R.id.tvSeries);
+        favorite = findViewById(R.id.favorite);
         drawerLayout = findViewById(R.id.drawerLayout);
         hello = findViewById(R.id.hello);
         movieList = new ArrayList<>();
         menu.setOnClickListener(view -> openDrawer(drawerLayout));
 
+        movie.setOnClickListener(v ->{
+            startActivity(new Intent(MainActivity.this, MovieSingleActivity.class));
+            finish();
+        });
+        series.setOnClickListener(v ->{
+            startActivity(new Intent(MainActivity.this, MovieSeriesActivity.class));
+            finish();
+        });
+        type.setOnClickListener(v ->{
+            startActivity(new Intent(MainActivity.this, MovieTypeActivity.class));
+            finish();
+        });
+        favorite.setOnClickListener(v ->{
+            startActivity(new Intent(MainActivity.this, MovieFavoriteActivity.class));
+            finish();
+        });
         logout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
