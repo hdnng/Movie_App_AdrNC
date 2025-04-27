@@ -72,7 +72,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     uid,
                                     userEmail,
                                     userName,
-                                    1
+                                    1,null
                             );
                             db.collection("users").document(uid)
                                     .set(user)

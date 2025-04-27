@@ -28,6 +28,13 @@
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:padding="8dp" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewMoviesFavorite"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="8dp"
+                android:clipToPadding="false"
+                tools:listitem="@layout/movie_item" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
