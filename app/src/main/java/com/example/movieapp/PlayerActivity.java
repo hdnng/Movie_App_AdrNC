@@ -34,8 +34,8 @@ public class PlayerActivity extends AppCompatActivity {
         String fullUrl = getIntent().getStringExtra("videoUrl"); // lấy link từ intent
         Log.d("PlayerActivity", "Full URL nhận: " + fullUrl);
 
-        videoId = extractYoutubeVideoId(fullUrl);
-        Log.d("PlayerActivity", "Video ID cắt được: " + videoId);
+//        videoId = extractYoutubeVideoId(fullUrl);
+//        Log.d("PlayerActivity", "Video ID cắt được: " + videoId);
 
 //        youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
 //            @Override
@@ -65,14 +65,14 @@ public class PlayerActivity extends AppCompatActivity {
         }
     }
 
-    private String extractYoutubeVideoId(String url) {
-        if (url == null || url.trim().isEmpty()) return null;
-        String pattern = "(?<=youtu.be/|watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
-        Pattern compiledPattern = Pattern.compile(pattern);
-        Matcher matcher = compiledPattern.matcher(url);
-        if (matcher.find()) {
-            return matcher.group();
-        }
-        return null;
-    }
+//    private String extractYoutubeVideoId(String url) {
+//        if (url == null || url.trim().isEmpty()) return null;
+//        String pattern = "(?<=youtu.be/|watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";
+//        Pattern compiledPattern = Pattern.compile(pattern);
+//        Matcher matcher = compiledPattern.matcher(url);
+//        if (matcher.find()) {
+//            return matcher.group();
+//        }
+//        return null;
+//    }
 }
