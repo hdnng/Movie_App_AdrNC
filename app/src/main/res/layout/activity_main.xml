@@ -72,6 +72,40 @@
                 android:layout_marginTop="16dp"
                 />
 
+            <TextView
+                android:id="@+id/genreTitle3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thể loại 3"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:padding="8dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerGenre3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                android:nestedScrollingEnabled="false" />
+
+            <TextView
+                android:id="@+id/genreTitle4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thể loại 4"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:padding="8dp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerGenre4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
+                android:nestedScrollingEnabled="false" />
+
 
         </LinearLayout>
 

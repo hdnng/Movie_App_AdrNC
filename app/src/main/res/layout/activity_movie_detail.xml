@@ -1,7 +1,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="#121212">
 
     <LinearLayout
         android:orientation="vertical"
@@ -12,39 +13,56 @@
         <ImageView
             android:id="@+id/detail_thumbnail"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop" />
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:layout_marginBottom="16dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
             <TextView
                 android:id="@+id/detail_title"
-                android:textStyle="bold"
-                android:textSize="24sp"
-                android:layout_marginTop="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <ImageButton
-                android:id="@+id/btnFavoriteMovie"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/white"
-                app:srcCompat="@drawable/favorite" />
-        </LinearLayout>
+                android:textStyle="bold"
+                android:textSize="32sp"
+                android:textColor="@android:color/white" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/btnFavoriteMovie"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:backgroundTint="@android:color/transparent"
+                app:srcCompat="@drawable/favorite"
+                android:contentDescription="Favorite"
+                android:tint="@android:color/white" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/detail_year"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
         <TextView
             android:id="@+id/detail_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/white"
+            android:textSize="14sp"
+            android:maxLines="4"
+            android:ellipsize="end" />
 
         <TextView
             android:id="@+id/tvGenres"
@@ -52,32 +70,40 @@
             android:layout_height="wrap_content"
             android:text="Genres"
             android:textSize="16sp"
-            android:padding="8dp"/>
+            android:textStyle="bold"
+            android:padding="8dp"
+            android:textColor="@android:color/white" />
 
-        <TextView
-            android:id="@+id/tvEpisodes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Episodes"
-            android:textSize="18sp"
-            android:padding="8dp"/>
+<!--        <TextView-->
+<!--            android:id="@+id/tvEpisodes"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Episodes"-->
+<!--            android:textSize="18sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:padding="8dp"-->
+<!--            android:textColor="@android:color/white" />-->
 
         <LinearLayout
             android:id="@+id/episodesLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="8dp">
-            <!-- Các tập phim sẽ được thêm vào ở đây -->
+            android:padding="8dp"
+            android:layout_marginTop="8dp">
+            <!-- Các tập phim sẽ được thêm dọc xuống ở đây -->
         </LinearLayout>
 
         <Button
             android:id="@+id/btnPlay"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Play"
-            android:layout_marginTop="16dp"
-            android:visibility="gone"/> <!-- Ban đầu ẩn đi -->
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@android:color/holo_red_light"
+            android:layout_marginTop="16dp" />
 
     </LinearLayout>
+
 </ScrollView>

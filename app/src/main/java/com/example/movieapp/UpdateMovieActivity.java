@@ -305,10 +305,35 @@ public class UpdateMovieActivity extends AppCompatActivity {
     }
 
     public void saveEpisode(String movieId, String title, String videoUrl, int episodeNumber) {
-        //Lưu tập phim với id ngẫu nhiên vào subcollection của movies
-        String randomID = UUID.randomUUID().toString();
-        Episode episode = new Episode(randomID, episodeNumber, title, videoUrl);
-        db.collection("MOVIES").document(movieId).collection("EPISODES").document(randomID).set(episode);
+        // Kiểm tra sự tồn tại của tập phim trong Firestore
+        db.collection("MOVIES").document(movieId).collection("EPISODES")
+                .whereEqualTo("episodeNumber", episodeNumber)  // Kiểm tra số tập
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().isEmpty()) {
+                            // Nếu không có tập phim nào với số tập này, thực hiện thêm tập mới
+                            String randomID = UUID.randomUUID().toString();
+                            Episode episode = new Episode(randomID, episodeNumber, title, videoUrl);
+                            db.collection("MOVIES").document(movieId).collection("EPISODES").document(randomID).set(episode)
+//                                    .addOnSuccessListener(aVoid -> {
+//                                        Toast.makeText(UpdateMovieActivity.this, "Tập phim đã được thêm thành công!", Toast.LENGTH_SHORT).show();
+//                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(UpdateMovieActivity.this, "Lỗi khi thêm tập phim: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            // Nếu đã tồn tại tập phim với số tập này, không làm gì cả
+                            // Bạn có thể không cần phải thông báo nếu không muốn báo lỗi khi tập đã tồn tại
+                            // Toast.makeText(UpdateMovieActivity.this, "Tập phim đã tồn tại!", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(UpdateMovieActivity.this, "Lỗi khi kiểm tra tập phim: " + task.getException(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+
+
+
 
 }

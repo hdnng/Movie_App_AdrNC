@@ -59,6 +59,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         ArrayList<Episode> episodes = (ArrayList<Episode>) intent.getSerializableExtra("episodes"); // Nếu có
 
         if (isSeries) {
+            btnPlay.setVisibility(View.GONE);
             // Truy vấn collection con EPISODES của movie đó
             db.collection("MOVIES")
                     .document(movieId)
@@ -95,8 +96,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                         Toast.makeText(this, "Lỗi tải tập phim: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         } else {
-            // Nếu là phim lẻ thì hiện nút Play
-            btnPlay.setVisibility(View.VISIBLE);
             btnPlay.setOnClickListener(v -> {
                 String videoUrl = intent.getStringExtra("videoUrl");
                 Intent playIntent = new Intent(MovieDetailActivity.this, PlayerActivity.class);
