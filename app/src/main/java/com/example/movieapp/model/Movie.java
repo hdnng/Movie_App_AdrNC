@@ -1,5 +1,7 @@
 package com.example.movieapp.model;
 
+import com.google.firebase.Timestamp;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -13,6 +15,7 @@ public class Movie implements Serializable {
     private List<String> typeId;
     private List<String> typeName;
     private String videoUrl; // Dành cho phim lẻ
+    private Timestamp createdTime;
 
     public Movie() {
     }
@@ -28,6 +31,7 @@ public class Movie implements Serializable {
         this.typeId = typeId;
         this.typeName = typeName;
         this.videoUrl = videoUrl;
+        this.createdTime = Timestamp.now();
     }
 
     public String getId() {
@@ -62,4 +66,12 @@ public class Movie implements Serializable {
 
     public String getVideoUrl() { return videoUrl; }
     public void setVideoUrl(String videoUrl) { this.videoUrl = videoUrl; }
+
+    public Timestamp getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Timestamp createdTime) {
+        this.createdTime = createdTime;
+    }
 }

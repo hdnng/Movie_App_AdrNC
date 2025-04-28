@@ -217,7 +217,7 @@ public class AddMovieActivity extends AppCompatActivity {
         }
         // Tạo đối tượng Movie với id ngẫu nhiên
         String randomId = UUID.randomUUID().toString();
-        Movie movie = new Movie(null, title, description, Integer.parseInt(year), thumbnail, chkIsSeries.isChecked(), selectedTypeIdList, selectedTypeNameList, videoUrl);
+        Movie movie = new Movie(randomId, title, description, Integer.parseInt(year), thumbnail, chkIsSeries.isChecked(), selectedTypeIdList, selectedTypeNameList, videoUrl);
         //lưu phim vào Firestore
         db.collection("MOVIES").document(randomId).set(movie)
                 .addOnSuccessListener(aVoid -> {
