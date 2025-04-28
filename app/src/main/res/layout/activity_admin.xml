@@ -20,8 +20,8 @@
         android:id="@+id/btnAddMovies"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Thêm phim"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:text="Quản lý phim" />
 
     <Button
         android:id="@+id/btnManageGenres"

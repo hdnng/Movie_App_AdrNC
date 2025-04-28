@@ -37,4 +37,19 @@ public class Type {
     public void setNameType(String nameType) {
         this.nameType = nameType;
     }
+
+    // Trong lớp Type
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Type type = (Type) obj;
+        return idType.equals(type.idType);
+    }
+
+    @Override
+    public int hashCode() {
+        return idType.hashCode();
+    }
 }
