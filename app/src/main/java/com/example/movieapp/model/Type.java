@@ -13,6 +13,7 @@ public class Type {
         this.idType = idType;
         this.nameType = nameType;
     }
+
     //Phuong thuc xu ly du lieu thao tac voi FireBase
     public HashMap<String, Object> convertHashMap() {
         HashMap<String, Object> typelist = new HashMap<>();

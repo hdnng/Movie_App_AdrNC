@@ -19,6 +19,7 @@ import com.example.movieapp.adapter.MovieAdminAdapter;
 import com.example.movieapp.model.Movie;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -59,8 +60,10 @@ public class AdminMovieListActivity extends AppCompatActivity {
     }
 
     private void loadMovieList(){
-        //lấy danh sách phim từ firebase
-        db.collection("MOVIES").get().addOnCompleteListener(movieTask -> {
+        //lấy danh sách phim từ firebase giảm dần theo thời gian tạo
+        db.collection("MOVIES")
+                .orderBy("createdTime", Query.Direction.DESCENDING)
+                .get().addOnCompleteListener(movieTask -> {
             //neu thanh cong
             if(movieTask.isSuccessful()){
                 for (QueryDocumentSnapshot document : movieTask.getResult()) {

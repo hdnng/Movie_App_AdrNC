@@ -104,19 +104,22 @@ public class UpdateMovieActivity extends AppCompatActivity {
         //nhan movie tu intent
         Intent intent = getIntent();
         movie = ( Movie) intent.getSerializableExtra("movie");
-        //hien thi thong tin movie ra man hinh
-        loadMovieInfoToView();
 
         // Load thể loại
         loadTypes();
 
         //load ds the loai cua phim
         loadMovieTypes();
+
+        //hien thi thong tin movie ra man hinh
+        loadMovieInfoToView();
     }
 
     private void loadMovieInfoToView(){
         edtTitle.setText(movie.getTitle());
         edtDescription.setText(movie.getDescription());
+        edtThumbnail.setText(movie.getThumbnail());
+        //set ds thể loại cua phim
         StringBuilder selectedTypes = new StringBuilder();
         for (Type type : selectedTypeList) {
             selectedTypes.append(type.getNameType()).append(", ");
@@ -126,24 +129,25 @@ public class UpdateMovieActivity extends AppCompatActivity {
         }
         tvSelectTypes.setText(selectedTypes.toString());
         edtYear.setText(movie.getYear() + "");
-        edtThumbnail.setText(movie.getThumbnail());
+
+        //hien thi tập phim le hoặc phim bo tuong ung
         if(movie.isSeries()){
             chkIsSeries.setChecked(true);
             layoutEpisodeList.setVisibility(View.VISIBLE);
             edtVideoUrl.setVisibility(View.GONE);
             //load ds episode
             db.collection("MOVIES").document(movie.getId()).collection("EPISODES").get()
-                .addOnCompleteListener(episodeTask -> {
-                    if(episodeTask.isSuccessful()){
-                        for (QueryDocumentSnapshot document : episodeTask.getResult()) {
-                            episodeList.add(document.toObject(Episode.class));
+                    .addOnCompleteListener(episodeTask -> {
+                        if(episodeTask.isSuccessful()){
+                            for (QueryDocumentSnapshot document : episodeTask.getResult()) {
+                                episodeList.add(document.toObject(Episode.class));
+                            }
+                            episodeAdapter.notifyDataSetChanged();
                         }
-                        episodeAdapter.notifyDataSetChanged();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                });
-
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(UpdateMovieActivity.this, "Lỗi: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
         }else{
             chkIsSeries.setChecked(false);
             layoutEpisodeList.setVisibility(View.GONE);
@@ -221,7 +225,6 @@ public class UpdateMovieActivity extends AppCompatActivity {
             }
             tvSelectTypes.setText(selectedTypes.toString());
         });
-
         builder.setNegativeButton("Hủy", null);
         builder.show();
     }
@@ -274,13 +277,21 @@ public class UpdateMovieActivity extends AppCompatActivity {
         for (Type type : selectedTypeList) {
             selectedTypeNameList.add(type.getNameType());
         }
-        // Tạo đối tượng Movie với id ngẫu nhiên
-        String randomId = UUID.randomUUID().toString();
-        Movie movie = new Movie(null, title, description, Integer.parseInt(year), thumbnail, chkIsSeries.isChecked(), selectedTypeIdList, selectedTypeNameList, videoUrl);
-        //lưu phim vào Firestore
-        db.collection("MOVIES").document(randomId).set(movie)
+        movie.setTitle(title);
+        movie.setDescription(description);
+        movie.setYear(Integer.parseInt(year));
+        movie.setThumbnail(thumbnail);
+        movie.setSeries(chkIsSeries.isChecked());
+        movie.setTypeId(selectedTypeIdList);
+        movie.setTypeName(selectedTypeNameList);
+        movie.setVideoUrl(videoUrl);
+
+// Then save the updated movie
+        db.collection("MOVIES").document(movie.getId()).set(movie)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(this, "Phim đã được lưu thành công!", Toast.LENGTH_SHORT).show();
+                    //clear ds episode cũ
+
                     //Lưu từng tập phim vào Firestore
                     for (Episode episode : episodeList) {
                         saveEpisode(movie.getId(), episode.getTitle(), episode.getVideoUrl(), episode.getEpisodeNumber());
