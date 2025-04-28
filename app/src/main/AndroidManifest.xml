@@ -25,6 +25,11 @@
             android:exported="false" />
         <activity
             android:name=".MovieSingleActivity"
+            android:name=".UpdateMovieActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MovieApp" />
+        <activity
+            android:name=".AdminMovieListActivity"
             android:exported="false" />
         <activity
             android:name=".PlayerActivity"
