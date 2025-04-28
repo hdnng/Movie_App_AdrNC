@@ -17,7 +17,7 @@ public class PlayerActivity extends AppCompatActivity {
 
 //    private YouTubePlayerView youTubePlayerView;
     private VideoView v;
-    private String videoId;
+//    private String videoId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
