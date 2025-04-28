@@ -31,7 +31,7 @@ public class MovieTypeActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayoutType;
     ImageView menu;
-    TextView hello;
+    TextView hello,movietype;
 
     LinearLayout logout, movie, series, type, favorite, home;
 
@@ -39,6 +39,7 @@ public class MovieTypeActivity extends AppCompatActivity {
 
     private List<String> typeNames = new ArrayList<>();
     private List<String> typeIds = new ArrayList<>();
+
     private boolean[] checkedItems;
 
     private RecyclerView recyclerMovies;
@@ -60,6 +61,7 @@ public class MovieTypeActivity extends AppCompatActivity {
         home = findViewById(R.id.homepage);
         drawerLayoutType = findViewById(R.id.drawerLayoutType);
         hello = findViewById(R.id.hello);
+        movietype = findViewById(R.id.movietype);
         recyclerMovies = findViewById(R.id.recyclerViewTypes);
 
         // Set up RecyclerView
@@ -149,11 +151,14 @@ public class MovieTypeActivity extends AppCompatActivity {
         });
         builder.setPositiveButton("OK", (dialog, which) -> {
             List<String> selectedTypeIds = new ArrayList<>();
+            List<String> selectedTypeDisplayNames = new ArrayList<>();
             for (int i = 0; i < checkedItems.length; i++) {
                 if (checkedItems[i]) {
                     selectedTypeIds.add(typeIds.get(i));
+                    selectedTypeDisplayNames.add(typeNames.get(i));
                 }
             }
+            movietype.setText("Thể loại phim : "+String.join(", ", selectedTypeDisplayNames));
             loadMoviesByTypes(selectedTypeIds);
         });
         builder.setNegativeButton("Hủy", (dialog, which) -> finish()); // Nếu bấm Hủy thì thoát luôn
