@@ -15,6 +15,9 @@
         android:theme="@style/Theme.MovieApp"
         tools:targetApi="31">
         <activity
+            android:name=".EditMovieActivity"
+            android:exported="false" />
+        <activity
             android:name=".MovieFavoriteActivity"
             android:exported="false" />
         <activity
@@ -25,6 +28,13 @@
             android:exported="false" />
         <activity
             android:name=".MovieSingleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UpdateMovieActivity"
+            android:exported="false"
+            android:theme="@style/Theme.MovieApp" />
+        <activity
+            android:name=".AdminMovieListActivity"
             android:exported="false" />
         <activity
             android:name=".PlayerActivity"

@@ -13,6 +13,7 @@ public class Type {
         this.idType = idType;
         this.nameType = nameType;
     }
+
     //Phuong thuc xu ly du lieu thao tac voi FireBase
     public HashMap<String, Object> convertHashMap() {
         HashMap<String, Object> typelist = new HashMap<>();
@@ -36,5 +37,20 @@ public class Type {
 
     public void setNameType(String nameType) {
         this.nameType = nameType;
+    }
+
+    // Trong lớp Type
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+
+        Type type = (Type) obj;
+        return idType.equals(type.idType);
+    }
+
+    @Override
+    public int hashCode() {
+        return idType.hashCode();
     }
 }

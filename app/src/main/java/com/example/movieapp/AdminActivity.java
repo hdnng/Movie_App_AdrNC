@@ -44,7 +44,7 @@ public class AdminActivity extends AppCompatActivity {
         btnAddMovies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(AdminActivity.this, AddMovieActivity.class));
+                startActivity(new Intent(AdminActivity.this, AdminMovieListActivity.class));
                 finish();
             }
         });

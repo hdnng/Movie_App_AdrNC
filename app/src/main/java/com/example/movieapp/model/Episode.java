@@ -3,16 +3,18 @@ package com.example.movieapp.model;
 import java.io.Serializable;
 
 public class Episode implements Serializable {
+    private String id;
     private int episodeNumber;
     private String title;
     private String videoUrl;
 
     public Episode() {}
 
-    public Episode(int episodeNumber, String title, String videoUrl) {
+    public Episode(String id, int episodeNumber, String title, String videoUrl) {
         this.episodeNumber = episodeNumber;
         this.title = title;
         this.videoUrl = videoUrl;
+        this.id = id;
     }
 
     public int getEpisodeNumber() { return episodeNumber; }

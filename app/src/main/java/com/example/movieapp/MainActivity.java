@@ -55,12 +55,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private RecyclerView recyclerGenre1, recyclerGenre2;
-    private TextView genreTitle1, genreTitle2;
+    private RecyclerView recyclerGenre1, recyclerGenre2, recyclerGenre3, recyclerGenre4;
+    private TextView genreTitle1, genreTitle2, genreTitle3, genreTitle4;
     private FrameLayout featuredMovieContainer;
 
-    private MovieAdapter adapterGenre1, adapterGenre2;
-    private List<Movie> listGenre1, listGenre2;
+    private MovieAdapter adapterGenre1, adapterGenre2, adapterGenre3, adapterGenre4;
+    private List<Movie> listGenre1, listGenre2, listGenre3, listGenre4;
 
 
     FirebaseFirestore db;
@@ -73,17 +73,29 @@ public class MainActivity extends AppCompatActivity {
         featuredMovieContainer = findViewById(R.id.featuredMovieContainer);
         genreTitle1 = findViewById(R.id.genreTitle1);
         genreTitle2 = findViewById(R.id.genreTitle2);
+        genreTitle3 = findViewById(R.id.genreTitle3);
+        genreTitle4 = findViewById(R.id.genreTitle4);
         recyclerGenre1 = findViewById(R.id.recyclerGenre1);
         recyclerGenre2 = findViewById(R.id.recyclerGenre2);
+        recyclerGenre3 = findViewById(R.id.recyclerGenre3);
+        recyclerGenre4 = findViewById(R.id.recyclerGenre4);
         listGenre1 = new ArrayList<>();
         listGenre2 = new ArrayList<>();
+        listGenre3 = new ArrayList<>();
+        listGenre4 = new ArrayList<>();
         adapterGenre1 = new MovieAdapter(listGenre1, movie -> openDetail(movie));
         adapterGenre2 = new MovieAdapter(listGenre2, movie -> openDetail(movie));
+        adapterGenre3 = new MovieAdapter(listGenre3, movie -> openDetail(movie));
+        adapterGenre4 = new MovieAdapter(listGenre4, movie -> openDetail(movie));
 
         recyclerGenre1.setAdapter(adapterGenre1);
         recyclerGenre2.setAdapter(adapterGenre2);
+        recyclerGenre3.setAdapter(adapterGenre3);
+        recyclerGenre4.setAdapter(adapterGenre4);
         recyclerGenre1.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerGenre2.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerGenre3.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerGenre4.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         menu = findViewById(R.id.menu);
         logout = findViewById(R.id.logout);
         movie = findViewById(R.id.movie);
@@ -92,9 +104,7 @@ public class MainActivity extends AppCompatActivity {
         favorite = findViewById(R.id.favorite);
         drawerLayout = findViewById(R.id.drawerLayout);
         hello = findViewById(R.id.hello);
-     //   movieList = new ArrayList<>();
         menu.setOnClickListener(view -> openDrawer(drawerLayout));
-
 
         //search
         searchEditText = findViewById(R.id.searchEditText);
@@ -170,8 +180,12 @@ public class MainActivity extends AppCompatActivity {
             // Nếu ô tìm kiếm rỗng, HIỂN lại các thể loại
             genreTitle1.setVisibility(View.VISIBLE);
             genreTitle2.setVisibility(View.VISIBLE);
+            genreTitle3.setVisibility(View.VISIBLE);
+            genreTitle4.setVisibility(View.VISIBLE);
             recyclerGenre1.setVisibility(View.VISIBLE);
             recyclerGenre2.setVisibility(View.VISIBLE);
+            recyclerGenre3.setVisibility(View.VISIBLE);
+            recyclerGenre4.setVisibility(View.VISIBLE);
             featuredMovieContainer.setVisibility(View.VISIBLE);
             recyclerSearchResults.setVisibility(View.GONE); // Ẩn kết quả tìm kiếm
             return;
@@ -180,8 +194,12 @@ public class MainActivity extends AppCompatActivity {
         // Ngược lại (đang nhập tìm kiếm)
         genreTitle1.setVisibility(View.GONE);
         genreTitle2.setVisibility(View.GONE);
+        genreTitle3.setVisibility(View.GONE);
+        genreTitle4.setVisibility(View.GONE);
         recyclerGenre1.setVisibility(View.GONE);
         recyclerGenre2.setVisibility(View.GONE);
+        recyclerGenre3.setVisibility(View.GONE);
+        recyclerGenre4.setVisibility(View.GONE);
         featuredMovieContainer.setVisibility(View.GONE);
         recyclerSearchResults.setVisibility(View.VISIBLE);
 
@@ -245,20 +263,30 @@ public class MainActivity extends AppCompatActivity {
                     Collections.shuffle(genreList);
                     String genre1 = genreList.get(0);
                     String genre2 = genreList.size() > 1 ? genreList.get(1) : genreList.get(0);
+                    String genre3 = genreList.size() > 2 ? genreList.get(2) : genreList.get(0);
+                    String genre4 = genreList.size() > 3 ? genreList.get(3) : genreList.get(0);
 
                     genreTitle1.setText(genre1);
                     genreTitle2.setText(genre2);
+                    genreTitle3.setText(genre3);
+                    genreTitle4.setText(genre4);
 
                     listGenre1.clear();
                     listGenre2.clear();
+                    listGenre3.clear();
+                    listGenre4.clear();
 
                     for (Movie movie : allMovieList) {
                         if (movie.getTypeName().contains(genre1)) listGenre1.add(movie);
                         if (movie.getTypeName().contains(genre2)) listGenre2.add(movie);
+                        if (movie.getTypeName().contains(genre3)) listGenre3.add(movie);
+                        if (movie.getTypeName().contains(genre4)) listGenre4.add(movie);
                     }
 
                     adapterGenre1.notifyDataSetChanged();
                     adapterGenre2.notifyDataSetChanged();
+                    adapterGenre3.notifyDataSetChanged();
+                    adapterGenre4.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Lỗi tải phim: " + e.getMessage(), Toast.LENGTH_SHORT).show();

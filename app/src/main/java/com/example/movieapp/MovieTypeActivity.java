@@ -5,6 +5,9 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.movieapp.adapter.MovieAdapter;
@@ -29,32 +31,25 @@ import java.util.List;
 
 public class MovieTypeActivity extends AppCompatActivity {
 
-    DrawerLayout drawerLayoutType;
-    ImageView menu;
-    TextView hello,movietype;
-
+    private DrawerLayout drawerLayoutType;
+    private ImageView menu;
+    private TextView hello;
     EditText searchEditText;
-    LinearLayout logout,movie,series,type,favorite,home;
-
-    FirebaseFirestore db;
-
-    private List<String> typeNames = new ArrayList<>();
-    private List<String> typeIds = new ArrayList<>();
-
-    private boolean[] checkedItems;
-
+    private AutoCompleteTextView movietype;
+    private LinearLayout logout, movie, series, favorite, home;
     private RecyclerView recyclerMovies;
     private MovieAdapter movieAdapter;
     private List<Movie> movieList = new ArrayList<>();
+    private List<String> typeNames = new ArrayList<>();
+    private List<String> typeIds = new ArrayList<>();
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_type);
 
-        searchEditText = findViewById(R.id.searchEditText);
-        searchEditText.setVisibility(View.GONE);
-
+        // Ánh xạ view
         menu = findViewById(R.id.menu);
         logout = findViewById(R.id.logout);
         movie = findViewById(R.id.movie);
@@ -66,64 +61,51 @@ public class MovieTypeActivity extends AppCompatActivity {
         hello = findViewById(R.id.hello);
         movietype = findViewById(R.id.movietype);
         recyclerMovies = findViewById(R.id.recyclerViewTypes);
+        searchEditText = findViewById(R.id.searchEditText);
 
-        // Set up RecyclerView
-        movieAdapter = new MovieAdapter(movieList, movie -> openDetail(movie));
+        searchEditText.setVisibility(View.GONE);
+        db = FirebaseFirestore.getInstance();
+
+        // Setup RecyclerView
+        movieAdapter = new MovieAdapter(movieList, this::openDetail);
         recyclerMovies.setAdapter(movieAdapter);
-        recyclerMovies.setLayoutManager(new LinearLayoutManager(this));
-        recyclerMovies.setVisibility(View.GONE); // Ban đầu ẩn
+        recyclerMovies.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerMovies.setVisibility(View.GONE);
 
-        // Menu drawer
-        menu.setOnClickListener(view -> openDrawer(drawerLayoutType));
-        movie.setOnClickListener(v -> {
-            startActivity(new Intent(MovieTypeActivity.this, MovieSingleActivity.class));
-            finish();
-        });
-        series.setOnClickListener(v -> {
-            startActivity(new Intent(MovieTypeActivity.this, MovieSeriesActivity.class));
-            finish();
-        });
-        favorite.setOnClickListener(v -> {
-            startActivity(new Intent(MovieTypeActivity.this, MovieFavoriteActivity.class));
-            finish();
-        });
-        home.setOnClickListener(v -> {
-            startActivity(new Intent(MovieTypeActivity.this, MainActivity.class));
-            finish();
-        });
+        // Setup Dropdown cho thể loại
+        movietype.setOnClickListener(v -> movietype.showDropDown());
+
+        menu.setOnClickListener(v -> openDrawer(drawerLayoutType));
+        movie.setOnClickListener(v -> navigateTo(MovieSingleActivity.class));
+        series.setOnClickListener(v -> navigateTo(MovieSeriesActivity.class));
+        favorite.setOnClickListener(v -> navigateTo(MovieFavoriteActivity.class));
+        home.setOnClickListener(v -> navigateTo(MainActivity.class));
         logout.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(MovieTypeActivity.this, LoginActivity.class));
-            finish();
+            navigateTo(LoginActivity.class);
         });
 
-        type.setOnClickListener(v -> {
-            closeDrawer(drawerLayoutType);
-            loadTypeAndShowDialog();
-        });
-        // Firebase
-        db = FirebaseFirestore.getInstance();
+        getUserInfo();
+        loadTypeAndSetDropdown();
+    }
+
+    private void getUserInfo() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            String uid = user.getUid();
-            db.collection("users").document(uid)
+            db.collection("users").document(user.getUid())
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            String username = documentSnapshot.getString("username");
-                            hello.setText("Xin chào: " + username);
-                        }
+                        String username = documentSnapshot.getString("username");
+                        hello.setText(username != null ? "Xin chào: " + username : "Xin chào!");
                     })
-                    .addOnFailureListener(e -> {
-                        hello.setText("Lỗi khi lấy thông tin người dùng");
-                    });
+                    .addOnFailureListener(e -> hello.setText("Lỗi khi lấy thông tin người dùng"));
         }
 
         // 👉 Gọi load danh sách thể loại khi mở trang
         loadTypeAndShowDialog();
     }
 
-    private void loadTypeAndShowDialog() {
+    private void loadTypeAndSetDropdown() {
         db.collection("TYPE")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
@@ -137,40 +119,19 @@ public class MovieTypeActivity extends AppCompatActivity {
                             typeIds.add(id);
                         }
                     }
-                    showTypeSelectionDialog();
+                    ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, typeNames);
+                    movietype.setAdapter(adapter);
+
+                    movietype.setOnItemClickListener((parent, view, position, id) -> {
+                        List<String> selectedTypeIds = new ArrayList<>();
+                        selectedTypeIds.add(typeIds.get(position));
+                        loadMoviesByTypes(selectedTypeIds);
+                    });
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Lỗi tải thể loại: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
-    }
-
-    private void showTypeSelectionDialog() {
-        checkedItems = new boolean[typeNames.size()];
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Chọn thể loại");
-        builder.setMultiChoiceItems(typeNames.toArray(new String[0]), checkedItems, (dialog, which, isChecked) -> {
-            checkedItems[which] = isChecked;
-        });
-        builder.setPositiveButton("OK", (dialog, which) -> {
-            List<String> selectedTypeIds = new ArrayList<>();
-            List<String> selectedTypeDisplayNames = new ArrayList<>();
-            for (int i = 0; i < checkedItems.length; i++) {
-                if (checkedItems[i]) {
-                    selectedTypeIds.add(typeIds.get(i));
-                    selectedTypeDisplayNames.add(typeNames.get(i));
-                }
-            }
-            movietype.setText("Thể loại phim : "+String.join(", ", selectedTypeDisplayNames));
-            loadMoviesByTypes(selectedTypeIds);
-        });
-        builder.setNegativeButton("Hủy", (dialog, which) -> finish()); // Nếu bấm Hủy thì thoát luôn
-        builder.show();
+                .addOnFailureListener(e -> Toast.makeText(this, "Lỗi tải thể loại: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void loadMoviesByTypes(List<String> selectedTypeIds) {
-        recyclerMovies.setLayoutManager(new GridLayoutManager(this, 2));//Chia lm 2 cot
-
         db.collection("MOVIES")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
@@ -179,7 +140,7 @@ public class MovieTypeActivity extends AppCompatActivity {
                         Movie movie = doc.toObject(Movie.class);
                         movie.setId(doc.getId());
                         List<String> movieTypeIds = (List<String>) doc.get("typeId");
-                        if (movieTypeIds != null) {
+                        if (movieTypeIds != null && !movieTypeIds.isEmpty()) {
                             for (String typeId : selectedTypeIds) {
                                 if (movieTypeIds.contains(typeId)) {
                                     filteredMovies.add(movie);
@@ -188,20 +149,17 @@ public class MovieTypeActivity extends AppCompatActivity {
                             }
                         }
                     }
-
+                    movieList.clear();
                     if (filteredMovies.isEmpty()) {
                         Toast.makeText(this, "Không có phim nào phù hợp", Toast.LENGTH_SHORT).show();
                         recyclerMovies.setVisibility(View.GONE);
                     } else {
-                        movieList.clear();
                         movieList.addAll(filteredMovies);
                         movieAdapter.notifyDataSetChanged();
                         recyclerMovies.setVisibility(View.VISIBLE);
                     }
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Lỗi tải phim: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                .addOnFailureListener(e -> Toast.makeText(this, "Lỗi tải phim: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private void openDetail(Movie movie) {
@@ -217,21 +175,19 @@ public class MovieTypeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public static void openDrawer(DrawerLayout drawerLayout) {
+    private void navigateTo(Class<?> activity) {
+        startActivity(new Intent(this, activity));
+        finish();
+    }
+
+    private static void openDrawer(DrawerLayout drawerLayout) {
         drawerLayout.openDrawer(GravityCompat.START);
     }
 
-    public static void closeDrawer(DrawerLayout drawerLayout) {
+    private static void closeDrawer(DrawerLayout drawerLayout) {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         }
-    }
-
-    public static void redirectActivity(Activity activity, Class secondActivity) {
-        Intent intent = new Intent(activity, secondActivity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivity(intent);
-        activity.finish();
     }
 
     @Override
@@ -244,8 +200,7 @@ public class MovieTypeActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+            navigateTo(LoginActivity.class);
         }
     }
 }
