@@ -10,6 +10,7 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Tiêu đề -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -20,21 +21,20 @@
             android:textSize="22sp"
             android:textStyle="bold" />
 
+        <!-- Các ô nhập thông tin phim (Tên, Mô tả, Thể loại, Năm) -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:textColorHint="#AAAAAA"
-            app:boxStrokeColor="#E50914"
-            app:hintTextColor="#E50914">
+            app:boxStrokeColor="#E50914">
 
             <EditText
                 android:id="@+id/edtTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_text_background"
                 android:hint="Tên phim"
+                android:background="@drawable/edit_text_background"
                 android:textColor="#FFFFFF" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -43,9 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:textColorHint="#AAAAAA"
-            app:boxStrokeColor="#E50914"
-            app:hintTextColor="#E50914">
+            app:boxStrokeColor="#E50914">
 
             <EditText
                 android:id="@+id/edtDescription"
@@ -76,9 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:textColorHint="#AAAAAA"
-            app:boxStrokeColor="#E50914"
-            app:hintTextColor="#E50914">
+            app:boxStrokeColor="#E50914">
 
             <EditText
                 android:id="@+id/edtYear"
@@ -90,24 +86,26 @@
                 android:textColor="#FFFFFF" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <!-- Button chọn ảnh -->
+        <Button
+            android:id="@+id/btnSelectImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:textColorHint="#AAAAAA"
-            app:boxStrokeColor="#E50914"
-            app:hintTextColor="#E50914">
+            android:text="Chọn Poster Từ Máy"
+            android:backgroundTint="#333333"
+            android:textColor="#FFFFFF"
+            android:layout_marginBottom="12dp"/>
 
-            <EditText
-                android:id="@+id/edtThumbnail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Link ảnh poster"
-                android:background="@drawable/edit_text_background"
-                android:textColor="#FFFFFF" />
-        </com.google.android.material.textfield.TextInputLayout>
+        <!-- ImageView hiển thị ảnh đã chọn -->
+        <ImageView
+            android:id="@+id/ivThumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="#1F1F1F"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="16dp" />
 
+        <!-- Các phần khác (Checkbox phim bộ, Tập phim, Lưu, Hủy) giữ nguyên -->
         <CheckBox
             android:id="@+id/chkIsSeries"
             android:layout_width="wrap_content"
@@ -117,28 +115,22 @@
             android:text="Phim bộ"
             android:textColor="#FFFFFF" />
 
-        <!-- Chỉ hiện nếu là phim lẻ -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
-            android:textColorHint="#AAAAAA"
-            app:boxStrokeColor="#E50914"
-            app:hintTextColor="#E50914">
+            app:boxStrokeColor="#E50914">
 
             <EditText
                 android:id="@+id/edtVideoUrl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Link video (phim lẻ)"
-                android:textColor="#FFFFFF"
-                android:visibility="visible"
                 android:background="@drawable/edit_text_background"
-                />
+                android:textColor="#FFFFFF" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Nếu là phim bộ -->
         <LinearLayout
             android:id="@+id/layoutEpisodeList"
             android:layout_width="match_parent"
@@ -150,37 +142,35 @@
                 android:id="@+id/btnAddEpisode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
                 android:backgroundTint="#333333"
                 android:text="Thêm tập mới"
-                android:textColor="#FFFFFF" />
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="12dp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvEpisodes"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:background="#1F1F1F" />
+                android:background="#1F1F1F"/>
         </LinearLayout>
 
         <Button
             android:id="@+id/btnSaveMovie"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:backgroundTint="#E50914"
-            android:padding="16dp"
             android:text="Lưu phim"
             android:textColor="#FFFFFF"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
 
         <Button
             android:id="@+id/btnBackToAdmin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:backgroundTint="#333333"
-            android:padding="16dp"
             android:text="Hủy"
-            android:textColor="#FFFFFF" />
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp" />
     </LinearLayout>
 </ScrollView>

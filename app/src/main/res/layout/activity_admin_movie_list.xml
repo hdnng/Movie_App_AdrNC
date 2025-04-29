@@ -29,6 +29,8 @@
             android:textStyle="bold" />
     </androidx.appcompat.widget.Toolbar>
 
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMovieList"
         android:layout_width="0dp"
