@@ -33,7 +33,8 @@ public class MovieTypeActivity extends AppCompatActivity {
     ImageView menu;
     TextView hello,movietype;
 
-    LinearLayout logout, movie, series, type, favorite, home;
+    EditText searchEditText;
+    LinearLayout logout,movie,series,type,favorite,home;
 
     FirebaseFirestore db;
 
@@ -51,7 +52,9 @@ public class MovieTypeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_type);
 
-        // Ánh xạ
+        searchEditText = findViewById(R.id.searchEditText);
+        searchEditText.setVisibility(View.GONE);
+
         menu = findViewById(R.id.menu);
         logout = findViewById(R.id.logout);
         movie = findViewById(R.id.movie);

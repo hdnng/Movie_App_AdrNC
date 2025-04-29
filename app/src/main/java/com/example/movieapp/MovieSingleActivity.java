@@ -3,6 +3,8 @@ package com.example.movieapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,6 +36,7 @@ public class MovieSingleActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     List<Movie> movieList;
     MovieAdapter movieAdapter;
+    EditText searchEditText;
     LinearLayout logout,movie,series,type,favorite,home;
 
     FirebaseFirestore db;
@@ -44,6 +47,9 @@ public class MovieSingleActivity extends AppCompatActivity {
         setContentView(R.layout.activity_movie_single);
 
         recyclerView = findViewById(R.id.recyclerViewMovies);
+
+        searchEditText = findViewById(R.id.searchEditText);
+        searchEditText.setVisibility(View.GONE);
 
         menu = findViewById(R.id.menu);
         logout = findViewById(R.id.logout);

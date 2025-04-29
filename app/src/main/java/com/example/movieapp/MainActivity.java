@@ -3,7 +3,10 @@ package com.example.movieapp;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,7 +43,14 @@ public class MainActivity extends AppCompatActivity {
     TextView  hello;
 
     LinearLayout logout,movie,series,type,favorite;
-    private List<Movie> movieList;
+   // private List<Movie> movieList;
+    private List<Movie> allMovieList = new ArrayList<>();
+
+
+    EditText searchEditText;
+    private RecyclerView recyclerSearchResults;
+    private MovieAdapter searchAdapter;
+
 
 
 
@@ -81,8 +92,20 @@ public class MainActivity extends AppCompatActivity {
         favorite = findViewById(R.id.favorite);
         drawerLayout = findViewById(R.id.drawerLayout);
         hello = findViewById(R.id.hello);
-        movieList = new ArrayList<>();
+     //   movieList = new ArrayList<>();
         menu.setOnClickListener(view -> openDrawer(drawerLayout));
+
+
+        //search
+        searchEditText = findViewById(R.id.searchEditText);
+        recyclerSearchResults = findViewById(R.id.recyclerSearchResults);
+        recyclerSearchResults.setLayoutManager(new GridLayoutManager(this, 2)); // 2 phim 1 dòng
+        searchAdapter = new MovieAdapter(new ArrayList<>(), movie -> openDetail(movie));
+        recyclerSearchResults.setAdapter(searchAdapter);
+        recyclerSearchResults.setVisibility(View.GONE); // Ban đầu ẩn đi
+
+
+
 
         movie.setOnClickListener(v ->{
             startActivity(new Intent(MainActivity.this, MovieSingleActivity.class));
@@ -125,7 +148,55 @@ public class MainActivity extends AppCompatActivity {
         }
 
         loadMovies();  // Thêm gọi hàm tải phim
+
+
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterMovies(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
+
     }
+
+    private void filterMovies(String query) {
+        if (query.isEmpty()) {
+            // Nếu ô tìm kiếm rỗng, HIỂN lại các thể loại
+            genreTitle1.setVisibility(View.VISIBLE);
+            genreTitle2.setVisibility(View.VISIBLE);
+            recyclerGenre1.setVisibility(View.VISIBLE);
+            recyclerGenre2.setVisibility(View.VISIBLE);
+            featuredMovieContainer.setVisibility(View.VISIBLE);
+            recyclerSearchResults.setVisibility(View.GONE); // Ẩn kết quả tìm kiếm
+            return;
+        }
+
+        // Ngược lại (đang nhập tìm kiếm)
+        genreTitle1.setVisibility(View.GONE);
+        genreTitle2.setVisibility(View.GONE);
+        recyclerGenre1.setVisibility(View.GONE);
+        recyclerGenre2.setVisibility(View.GONE);
+        featuredMovieContainer.setVisibility(View.GONE);
+        recyclerSearchResults.setVisibility(View.VISIBLE);
+
+        List<Movie> filteredList = new ArrayList<>();
+        for (Movie movie : allMovieList) {
+            if (movie.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(movie);
+            }
+        }
+
+        searchAdapter.setList(filteredList);
+    }
+
+
+
 
     private void openDetail(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
@@ -146,29 +217,27 @@ public class MainActivity extends AppCompatActivity {
         db.collection("MOVIES")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
-                    List<Movie> allMovies = new ArrayList<>();
+                    allMovieList.clear();  // Xóa nếu có dữ liệu cũ
                     for (QueryDocumentSnapshot doc : querySnapshot) {
                         Movie movie = doc.toObject(Movie.class);
                         movie.setId(doc.getId());
-                        allMovies.add(movie);
+                        allMovieList.add(movie);
                     }
 
-                    // Kiểm tra nếu không có phim nào trong danh sách
-                    if (allMovies.isEmpty()) {
-                        // Thông báo cho người dùng hoặc xử lý theo cách khác
+                    if (allMovieList.isEmpty()) {
                         Toast.makeText(this, "Không có phim nào để hiển thị", Toast.LENGTH_SHORT).show();
-                        return;  // Dừng lại và không thực hiện tiếp các thao tác
+                        return;
                     }
 
-                    // Chọn 1 phim nổi bật ngẫu nhiên
-                    int featuredIndex = (int)(Math.random() * allMovies.size());
-                    Movie featuredMovie = allMovies.get(featuredIndex);
-                    showFeaturedMovie(featuredMovie);  // Xử lý hiển thị phim nổi bật
+                    // Chọn phim nổi bật ngẫu nhiên
+                    int featuredIndex = (int) (Math.random() * allMovieList.size());
+                    Movie featuredMovie = allMovieList.get(featuredIndex);
+                    showFeaturedMovie(featuredMovie);
 
-                    // Lấy tất cả thể loại từ danh sách phim
+                    // Lấy tất cả thể loại
                     Set<String> allGenres = new HashSet<>();
-                    for (Movie movie : allMovies) {
-                        allGenres.addAll(movie.getTypeName());  // typeName là List<String>
+                    for (Movie movie : allMovieList) {
+                        allGenres.addAll(movie.getTypeName());
                     }
 
                     // Chọn ngẫu nhiên 2 thể loại
@@ -180,8 +249,10 @@ public class MainActivity extends AppCompatActivity {
                     genreTitle1.setText(genre1);
                     genreTitle2.setText(genre2);
 
-                    // Lọc phim theo thể loại
-                    for (Movie movie : allMovies) {
+                    listGenre1.clear();
+                    listGenre2.clear();
+
+                    for (Movie movie : allMovieList) {
                         if (movie.getTypeName().contains(genre1)) listGenre1.add(movie);
                         if (movie.getTypeName().contains(genre2)) listGenre2.add(movie);
                     }
@@ -193,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Lỗi tải phim: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 
 
     private void showFeaturedMovie(Movie movie) {

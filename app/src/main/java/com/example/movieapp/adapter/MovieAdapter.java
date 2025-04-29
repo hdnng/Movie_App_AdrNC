@@ -34,6 +34,12 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         return new MovieViewHolder(itemView);
     }
 
+    // Cập nhật danh sách phim khi tìm kiếm
+    public void setList(List<Movie> newMovieList) {
+        this.movieList = newMovieList;
+        notifyDataSetChanged(); // Cập nhật UI
+    }
+
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
         Movie movie = movieList.get(position);
