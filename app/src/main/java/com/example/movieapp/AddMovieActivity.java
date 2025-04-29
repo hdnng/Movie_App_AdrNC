@@ -124,7 +124,7 @@ public class AddMovieActivity extends AppCompatActivity {
         });
 
         btnBackToAdmin.setOnClickListener(v -> {
-            startActivity(new Intent(AddMovieActivity.this, AdminActivity.class));
+            startActivity(new Intent(AddMovieActivity.this, AdminMovieListActivity.class));
             finish();
         });
     }

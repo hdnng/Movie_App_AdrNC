@@ -21,30 +21,30 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
 
             <TextView
                 android:id="@+id/detail_title"
-                android:layout_width="300sp"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="32sp"
-                android:textColor="@android:color/white" />
-
-            <View
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textStyle="bold"
+                android:textSize="28sp"
+                android:textColor="@android:color/white"
+                android:maxLines="2"
+                android:ellipsize="end" />
 
             <ImageButton
                 android:id="@+id/btnFavoriteMovie"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:backgroundTint="@android:color/transparent"
-                app:srcCompat="@drawable/favorite"
-                android:contentDescription="Favorite"
-                 />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/favorite"
+                android:tint="@android:color/holo_red_light"
+                android:contentDescription="Favorite" />
         </LinearLayout>
+
 
         <TextView
             android:id="@+id/detail_year"

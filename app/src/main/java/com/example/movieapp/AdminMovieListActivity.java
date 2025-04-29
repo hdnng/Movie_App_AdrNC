@@ -3,6 +3,7 @@ package com.example.movieapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -30,6 +31,8 @@ public class AdminMovieListActivity extends AppCompatActivity {
     private FloatingActionButton btnAdd;
     private RecyclerView rvMovieList;
     private FirebaseFirestore db;
+
+    private ImageButton btnBack;
     private List<Movie> movieList = new ArrayList<>();
 
     @Override
@@ -48,12 +51,18 @@ public class AdminMovieListActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(v -> {
             startActivity(new Intent(AdminMovieListActivity.this, AddMovieActivity.class));
         });
+
+        btnBack.setOnClickListener(v -> {
+            startActivity(new Intent(AdminMovieListActivity.this, AdminActivity.class));
+        });
+
     }
 
     private void init(){
         //ánh xạ
         btnAdd = findViewById(R.id.btnAdd);
         rvMovieList = findViewById(R.id.rvMovieList);
+        btnBack = findViewById(R.id.btnBack);
         db = FirebaseFirestore.getInstance();
 
         loadMovieList();

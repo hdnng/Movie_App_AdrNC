@@ -21,7 +21,7 @@
             <!-- Toolbar -->
             <include layout="@layout/toolbar" />
 
-            <!-- Phim nổi bật (ngẫu nhiên 1 phim) -->
+
             <FrameLayout
                 android:id="@+id/featuredMovieContainer"
                 android:layout_width="match_parent"
