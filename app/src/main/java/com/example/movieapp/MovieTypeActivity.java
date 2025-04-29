@@ -1,7 +1,6 @@
 package com.example.movieapp;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -55,7 +54,6 @@ public class MovieTypeActivity extends AppCompatActivity {
         movie = findViewById(R.id.movie);
         series = findViewById(R.id.tvSeries);
         favorite = findViewById(R.id.favorite);
-        type = findViewById(R.id.type);
         home = findViewById(R.id.homepage);
         drawerLayoutType = findViewById(R.id.drawerLayoutType);
         hello = findViewById(R.id.hello);
@@ -87,6 +85,7 @@ public class MovieTypeActivity extends AppCompatActivity {
 
         getUserInfo();
         loadTypeAndSetDropdown();
+        loadAllMovies();
     }
 
     private void getUserInfo() {
@@ -100,9 +99,6 @@ public class MovieTypeActivity extends AppCompatActivity {
                     })
                     .addOnFailureListener(e -> hello.setText("Lỗi khi lấy thông tin người dùng"));
         }
-
-        // 👉 Gọi load danh sách thể loại khi mở trang
-        loadTypeAndShowDialog();
     }
 
     private void loadTypeAndSetDropdown() {
@@ -130,7 +126,29 @@ public class MovieTypeActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Lỗi tải thể loại: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
+    private void loadAllMovies(){
+        db.collection("MOVIES")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Movie> filteredMovies = new ArrayList<>();
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        Movie movie = doc.toObject(Movie.class);
+                        movie.setId(doc.getId());
+                        filteredMovies.add(movie);
 
+                    }
+                    movieList.clear();
+                    if (filteredMovies.isEmpty()) {
+                        Toast.makeText(this, "Không có phim nào phù hợp", Toast.LENGTH_SHORT).show();
+                        recyclerMovies.setVisibility(View.GONE);
+                    } else {
+                        movieList.addAll(filteredMovies);
+                        movieAdapter.notifyDataSetChanged();
+                        recyclerMovies.setVisibility(View.VISIBLE);
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, "Lỗi tải phim: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
     private void loadMoviesByTypes(List<String> selectedTypeIds) {
         db.collection("MOVIES")
                 .get()
