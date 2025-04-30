@@ -26,7 +26,7 @@
                 android:id="@+id/featuredMovieContainer"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_margin="8dp"/>
+                android:layout_margin="8dp" />
 
             <!-- Thể loại 1 -->
             <TextView
@@ -36,6 +36,7 @@
                 android:text="Thể loại 1"
                 android:textColor="@color/white"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 android:padding="8dp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -54,6 +55,7 @@
                 android:text="Thể loại 2"
                 android:textColor="@color/white"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 android:padding="8dp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -79,6 +81,7 @@
                 android:text="Thể loại 3"
                 android:textColor="@color/white"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 android:padding="8dp" />
 
             <androidx.recyclerview.widget.RecyclerView
@@ -96,6 +99,7 @@
                 android:text="Thể loại 4"
                 android:textColor="@color/white"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 android:padding="8dp" />
 
             <androidx.recyclerview.widget.RecyclerView

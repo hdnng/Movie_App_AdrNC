@@ -1,6 +1,5 @@
 package com.example.movieapp;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -36,33 +35,20 @@ import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
-
-
     DrawerLayout drawerLayout;
     ImageView menu;
     TextView  hello;
-
     LinearLayout logout,movie,series,type,favorite;
-   // private List<Movie> movieList;
     private List<Movie> allMovieList = new ArrayList<>();
-
-
     EditText searchEditText;
     private RecyclerView recyclerSearchResults;
     private MovieAdapter searchAdapter;
-
-
-
-
-
     private RecyclerView recyclerGenre1, recyclerGenre2, recyclerGenre3, recyclerGenre4;
     private TextView genreTitle1, genreTitle2, genreTitle3, genreTitle4;
     private FrameLayout featuredMovieContainer;
 
     private MovieAdapter adapterGenre1, adapterGenre2, adapterGenre3, adapterGenre4;
     private List<Movie> listGenre1, listGenre2, listGenre3, listGenre4;
-
-
     FirebaseFirestore db;
 
     @Override
@@ -114,9 +100,6 @@ public class MainActivity extends AppCompatActivity {
         recyclerSearchResults.setAdapter(searchAdapter);
         recyclerSearchResults.setVisibility(View.GONE); // Ban đầu ẩn đi
 
-
-
-
         movie.setOnClickListener(v ->{
             startActivity(new Intent(MainActivity.this, MovieSingleActivity.class));
             finish();
@@ -158,7 +141,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         loadMovies();  // Thêm gọi hàm tải phim
-
 
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -213,9 +195,6 @@ public class MainActivity extends AppCompatActivity {
         searchAdapter.setList(filteredList);
     }
 
-
-
-
     private void openDetail(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra("movieId", movie.getId());
@@ -229,7 +208,6 @@ public class MainActivity extends AppCompatActivity {
 
         startActivity(intent);
     }
-
 
     private void loadMovies() {
         db.collection("MOVIES")
@@ -293,8 +271,6 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-
-
     private void showFeaturedMovie(Movie movie) {
         // Kiểm tra xem Activity có còn tồn tại không trước khi thực hiện Glide
         if (!isFinishing() && !isDestroyed()) {
@@ -316,10 +292,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-
-
     public static void openDrawer(DrawerLayout drawerLayout)
     {
         drawerLayout.openDrawer(GravityCompat.START);
@@ -330,13 +302,6 @@ public class MainActivity extends AppCompatActivity {
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
         }
-    }
-
-    public static void redirectActivity(Activity activity, Class seconActivity){
-        Intent intent = new Intent(activity, seconActivity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivity(intent);
-        activity.finish();
     }
 
     @Override

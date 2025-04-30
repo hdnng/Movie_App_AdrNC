@@ -123,10 +123,10 @@ public class AddMovieActivity extends AppCompatActivity {
             uploadImageAndSaveMovie();
         });
 
-        btnBackToAdmin.setOnClickListener(v -> {
-            startActivity(new Intent(AddMovieActivity.this, AdminMovieListActivity.class));
-            finish();
-        });
+            btnBackToAdmin.setOnClickListener(v -> {
+                startActivity(new Intent(AddMovieActivity.this, AdminMovieListActivity.class));
+                finish();
+            });
     }
 
     private void loadTypes() {
