@@ -1,8 +1,10 @@
 package com.example.movieapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.movieapp.model.Episode;
@@ -83,6 +86,14 @@ public class MovieDetailActivity extends AppCompatActivity {
                                 episodeButton.setText(episodeNumber + ". " + title);
                                 episodeButton.setTextSize(16);
                                 episodeButton.setPadding(8, 8, 8, 8);
+                                episodeButton.setBackgroundTintList(ContextCompat.getColorStateList(this, android.R.color.holo_red_light));
+                                //set margin
+                                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                                        ViewGroup.LayoutParams.MATCH_PARENT,
+                                        ViewGroup.LayoutParams.WRAP_CONTENT
+                                );
+                                params.setMargins(0, 0, 0, 16); // 16dp khoảng cách dưới
+                                episodeButton.setLayoutParams(params);
                                 episodeButton.setOnClickListener(v -> {
                                     Intent playIntent = new Intent(MovieDetailActivity.this, PlayerActivity.class);
                                     playIntent.putExtra("videoUrl", videoUrl); // Gửi videoUrl của tập phim
