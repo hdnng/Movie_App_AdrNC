@@ -31,6 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TRANG CHỦ"
+            android:textStyle="bold"
             android:textSize="20dp" />
 
     </LinearLayout>
@@ -45,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="PHIM YÊU THÍCH"
+            android:textStyle="bold"
             android:textSize="20dp" />
 
     </LinearLayout>
@@ -59,6 +61,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="PHIM LẺ"
+            android:textStyle="bold"
             android:textSize="20dp" />
 
     </LinearLayout>
@@ -72,6 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="PHIM BỘ"
+            android:textStyle="bold"
             android:textSize="20dp" />
 
     </LinearLayout>
@@ -85,6 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="THỂ LOẠI"
+            android:textStyle="bold"
             android:textSize="20dp" />
 
     </LinearLayout>
@@ -98,6 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ĐĂNG XUẤT"
+            android:textStyle="bold"
             android:textSize="20dp" />
 
     </LinearLayout>
