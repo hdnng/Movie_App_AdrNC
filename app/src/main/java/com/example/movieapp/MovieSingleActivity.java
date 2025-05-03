@@ -37,20 +37,24 @@ public class MovieSingleActivity extends AppCompatActivity {
     private List<Movie> movieList;
     private MovieAdapter movieAdapter;
     private EditText searchEditText;
-    private LinearLayout logout,movie,series,type,favorite,home;
-
+    private LinearLayout logout,series,type,favorite,home;
     private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_movie_single);
 
+        initViews();
+        setupListeners();
+        loadUsername();
+        loadMovies();
+    }
+
+    private void initViews(){
         recyclerView = findViewById(R.id.recyclerViewMovies);
-
         searchEditText = findViewById(R.id.searchEditText);
-        searchEditText.setVisibility(View.GONE);
-
         menu = findViewById(R.id.menu);
         logout = findViewById(R.id.logout);
         series = findViewById(R.id.tvSeries);
@@ -59,11 +63,15 @@ public class MovieSingleActivity extends AppCompatActivity {
         home = findViewById(R.id.homepage);
         drawerLayoutMovie = findViewById(R.id.drawerLayoutMovie);
         hello = findViewById(R.id.hello);
-        menu.setOnClickListener(view -> openDrawer(drawerLayoutMovie));
-
         movieList = new ArrayList<>();
         movieAdapter = new MovieAdapter(movieList,movie->openDetail(movie));
+        db = FirebaseFirestore.getInstance();
 
+    }
+
+    private void setupListeners(){
+        searchEditText.setVisibility(View.GONE);
+        menu.setOnClickListener(view -> openDrawer(drawerLayoutMovie));
         series.setOnClickListener(v ->{
             startActivity(new Intent(MovieSingleActivity.this, MovieSeriesActivity.class));
             finish();
@@ -85,8 +93,9 @@ public class MovieSingleActivity extends AppCompatActivity {
             startActivity(new Intent(MovieSingleActivity.this, LoginActivity.class));
             finish();
         });
+    }
 
-        db = FirebaseFirestore.getInstance();
+    private void loadUsername(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String uid = user.getUid();
@@ -101,13 +110,11 @@ public class MovieSingleActivity extends AppCompatActivity {
                     .addOnFailureListener(e -> {
                         hello.setText("Lỗi khi lấy thông tin người dùng");
                     });
-            loadMovies();
         }
     }
 
     private void loadMovies() {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));//Chia lm 2 cot
-
         db.collection("MOVIES")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
@@ -117,7 +124,6 @@ public class MovieSingleActivity extends AppCompatActivity {
                         movie.setId(doc.getId());
                         allMovies.add(movie);
                     }
-
                     // Kiểm tra nếu không có phim nào trong danh sách
                     if (allMovies.isEmpty()) {
                         // Thông báo cho người dùng hoặc xử lý theo cách khác
@@ -130,9 +136,6 @@ public class MovieSingleActivity extends AppCompatActivity {
                     for (Movie movie : allMovies) {
                         allGenres.addAll(movie.getTypeName());  // typeName là List<String>
                     }
-
-
-
                     // Lọc phim theo thể loại
                     for (Movie movie : allMovies) {
                         if (!movie.isSeries()) movieList.add(movie);//phim co series false
@@ -155,7 +158,6 @@ public class MovieSingleActivity extends AppCompatActivity {
         intent.putExtra("videoUrl", movie.getVideoUrl());
         intent.putExtra("isSeries", movie.isSeries());
         intent.putStringArrayListExtra("genres", new ArrayList<>(movie.getTypeName()));
-
         startActivity(intent);
     }
 
@@ -169,13 +171,6 @@ public class MovieSingleActivity extends AppCompatActivity {
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
         }
-    }
-
-    public static void redirectActivity(Activity activity, Class seconActivity){
-        Intent intent = new Intent(activity, seconActivity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivity(intent);
-        activity.finish();
     }
 
     @Override

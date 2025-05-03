@@ -2,17 +2,11 @@ package com.example.movieapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,7 +25,6 @@ public class AdminMovieListActivity extends AppCompatActivity {
     private FloatingActionButton btnAdd;
     private RecyclerView rvMovieList;
     private FirebaseFirestore db;
-
     private ImageButton btnBack;
     private List<Movie> movieList = new ArrayList<>();
 
@@ -40,32 +33,26 @@ public class AdminMovieListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_admin_movie_list);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        init();
-
-        btnAdd.setOnClickListener(v -> {
-            startActivity(new Intent(AdminMovieListActivity.this, AddMovieActivity.class));
-        });
-
-        btnBack.setOnClickListener(v -> {
-            startActivity(new Intent(AdminMovieListActivity.this, AdminActivity.class));
-        });
-
+        initViews();
+        setupListeners();
+        loadMovieList();
     }
 
-    private void init(){
+    private void initViews(){
         //ánh xạ
         btnAdd = findViewById(R.id.btnAdd);
         rvMovieList = findViewById(R.id.rvMovieList);
         btnBack = findViewById(R.id.btnBack);
         db = FirebaseFirestore.getInstance();
+    }
 
-        loadMovieList();
+    private void setupListeners(){
+        btnAdd.setOnClickListener(v -> {
+            startActivity(new Intent(AdminMovieListActivity.this, AddMovieActivity.class));
+        });
+        btnBack.setOnClickListener(v -> {
+            startActivity(new Intent(AdminMovieListActivity.this, AdminActivity.class));
+        });
     }
 
     private void loadMovieList(){

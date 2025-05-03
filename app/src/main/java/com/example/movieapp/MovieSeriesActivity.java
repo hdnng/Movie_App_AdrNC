@@ -30,17 +30,14 @@ import java.util.List;
 import java.util.Set;
 
 public class MovieSeriesActivity extends AppCompatActivity {
-    DrawerLayout drawerLayoutSeries;
-    ImageView menu;
-    TextView hello;
-    EditText searchEditText;
-
-    //Hiện Movie
+    private DrawerLayout drawerLayoutSeries;
+    private ImageView menu;
+    private TextView hello;
+    private EditText searchEditText;
     private RecyclerView recyclerView;
     private List<Movie> movieList;
     private MovieAdapter movieAdapter;
-
-    private LinearLayout logout,movie,series,type,favorite,home;
+    private LinearLayout logout,movie,type,favorite,home;
 
     private FirebaseFirestore db;
     @Override
@@ -49,11 +46,15 @@ public class MovieSeriesActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_movie_series);
 
-        recyclerView = findViewById(R.id.recyclerViewMoviesSeries);
+        initViews();
+        setupListeners();
+        loadUsername();
+        loadMovies();
+    }
 
+    private void initViews(){
+        recyclerView = findViewById(R.id.recyclerViewMoviesSeries);
         searchEditText = findViewById(R.id.searchEditText);
-        searchEditText.setVisibility(View.GONE);
-        //click menu
         menu = findViewById(R.id.menu);
         logout = findViewById(R.id.logout);
         movie = findViewById(R.id.movie);
@@ -63,9 +64,13 @@ public class MovieSeriesActivity extends AppCompatActivity {
         //Cấu hình adapter
         movieList = new ArrayList<>();
         movieAdapter = new MovieAdapter(movieList,movie->openDetail(movie));
-
         drawerLayoutSeries = findViewById(R.id.drawerLayoutSeries);
         hello = findViewById(R.id.hello);
+        db = FirebaseFirestore.getInstance();
+    }
+
+    private void setupListeners(){
+        searchEditText.setVisibility(View.GONE);
         menu.setOnClickListener(view -> openDrawer(drawerLayoutSeries));
         movie.setOnClickListener(v ->{
             startActivity(new Intent(MovieSeriesActivity.this, MovieSingleActivity.class));
@@ -88,8 +93,9 @@ public class MovieSeriesActivity extends AppCompatActivity {
             startActivity(new Intent(MovieSeriesActivity.this, LoginActivity.class));
             finish();
         });
+    }
 
-        db = FirebaseFirestore.getInstance();
+    private void loadUsername(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String uid = user.getUid();
@@ -104,10 +110,8 @@ public class MovieSeriesActivity extends AppCompatActivity {
                     .addOnFailureListener(e -> {
                         hello.setText("Lỗi khi lấy thông tin người dùng");
                     });
-            loadMovies();
         }
     }
-
 
     //Hiện danh sách và click details
     private void loadMovies() {
@@ -175,13 +179,6 @@ public class MovieSeriesActivity extends AppCompatActivity {
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
         }
-    }
-
-    public static void redirectActivity(Activity activity, Class seconActivity){
-        Intent intent = new Intent(activity, seconActivity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivity(intent);
-        activity.finish();
     }
 
     @Override

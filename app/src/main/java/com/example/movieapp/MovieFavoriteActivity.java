@@ -50,14 +50,18 @@ public class MovieFavoriteActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_movie_favorite);
 
+        initViews();
+        setupListeners();
+        loadUsername();
+        loadMovies();
+    }
+
+    private void initViews(){
         recyclerView = findViewById(R.id.recyclerViewMoviesFavorite);
         //Cấu hình adapter
         movieList = new ArrayList<>();
         movieAdapter = new MovieAdapter(movieList,movie->openDetail(movie));
-
         searchEditText = findViewById(R.id.searchEditText);
-        searchEditText.setVisibility(View.GONE);
-
         menu = findViewById(R.id.menu);
         logout = findViewById(R.id.logout);
         movie = findViewById(R.id.movie);
@@ -66,6 +70,12 @@ public class MovieFavoriteActivity extends AppCompatActivity {
         home = findViewById(R.id.homepage);
         drawerLayoutFavorite = findViewById(R.id.drawerLayoutFavorite);
         hello = findViewById(R.id.hello);
+        db = FirebaseFirestore.getInstance();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    private  void setupListeners(){
+        searchEditText.setVisibility(View.GONE);
         menu.setOnClickListener(view -> openDrawer(drawerLayoutFavorite));
         movie.setOnClickListener(v ->{
             startActivity(new Intent(MovieFavoriteActivity.this, MovieSingleActivity.class));
@@ -89,9 +99,9 @@ public class MovieFavoriteActivity extends AppCompatActivity {
             startActivity(new Intent(MovieFavoriteActivity.this, LoginActivity.class));
             finish();
         });
+    }
 
-        db = FirebaseFirestore.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+    private void loadUsername(){
         if (user != null) {
             String uid = user.getUid();
             db.collection("users").document(uid)
@@ -105,11 +115,8 @@ public class MovieFavoriteActivity extends AppCompatActivity {
                     .addOnFailureListener(e -> {
                         hello.setText("Lỗi khi lấy thông tin người dùng");
                     });
-            loadMovies();
         }
     }
-
-
 
     //Hiện danh sách và click details
     private void loadMovies() {
@@ -138,13 +145,11 @@ public class MovieFavoriteActivity extends AppCompatActivity {
                                                 allMovies.add(movie);
                                             }
                                         }
-
                                         // Kiểm tra nếu không có phim nào trong danh sách yêu thích
                                         if (allMovies.isEmpty()) {
                                             Toast.makeText(this, "Không có phim yêu thích nào để hiển thị", Toast.LENGTH_SHORT).show();
                                             return;  // Dừng lại và không thực hiện tiếp các thao tác
                                         }
-
                                         movieList.clear(); // Làm sạch danh sách cũ
                                         movieList.addAll(allMovies); // Thêm phim yêu thích vào danh sách
                                         movieAdapter.notifyDataSetChanged();
@@ -165,7 +170,6 @@ public class MovieFavoriteActivity extends AppCompatActivity {
                 });
     }
 
-
     private void openDetail(Movie movie) {
         Intent intent = new Intent(this, MovieDetailActivity.class);
         intent.putExtra("movieId", movie.getId());
@@ -176,10 +180,8 @@ public class MovieFavoriteActivity extends AppCompatActivity {
         intent.putExtra("videoUrl", movie.getVideoUrl());
         intent.putExtra("isSeries", movie.isSeries());
         intent.putStringArrayListExtra("genres", new ArrayList<>(movie.getTypeName()));
-
         startActivity(intent);
     }
-
 
     public static void openDrawer(DrawerLayout drawerLayout)
     {
@@ -191,13 +193,6 @@ public class MovieFavoriteActivity extends AppCompatActivity {
         if(drawerLayout.isDrawerOpen(GravityCompat.START)){
             drawerLayout.closeDrawer(GravityCompat.START);
         }
-    }
-
-    public static void redirectActivity(Activity activity, Class seconActivity){
-        Intent intent = new Intent(activity, seconActivity);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activity.startActivity(intent);
-        activity.finish();
     }
 
     @Override

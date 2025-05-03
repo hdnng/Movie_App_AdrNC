@@ -7,11 +7,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.movieapp.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,38 +26,39 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // ánh xạ
+        initViews();
+        setupListeners();
+    }
+
+    private void initViews(){
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
         comfirmPassword = findViewById(R.id.confirmPassword);
         username = findViewById(R.id.username);
         btnRegister = findViewById(R.id.btnRegister);
         txtLogin = findViewById(R.id.txtLogin);
-
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+    }
 
+    private void setupListeners(){
         txtLogin.setOnClickListener(v -> {
             startActivity(new Intent(this, LoginActivity.class));
         });
-
         btnRegister.setOnClickListener(v -> {
             String userEmail = email.getText().toString().trim();
             String userPass = password.getText().toString().trim();
             String comfirmPass = comfirmPassword.getText().toString().trim();
             String userName = username.getText().toString().trim();
-
             // kiểm tra các trường
             if (userEmail.isEmpty() || userPass.isEmpty() || comfirmPass.isEmpty() || userName.isEmpty()) {
                 Toast.makeText(this, "Vui lòng điền đầy đủ thông tin", Toast.LENGTH_SHORT).show();
                 return;
             }
-
             if (!userPass.equals(comfirmPass)){
                 Toast.makeText(this,"Mật khẩu xác nhận không khớp",Toast.LENGTH_SHORT).show();
                 return;
             }
-
             //đăng ký tài khoản
             mAuth.createUserWithEmailAndPassword(userEmail, userPass)
                     .addOnCompleteListener(task -> {

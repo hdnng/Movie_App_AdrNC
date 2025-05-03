@@ -48,7 +48,14 @@ public class MovieTypeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_type);
 
-        // Ánh xạ view
+        initViews();
+        setupListeners();
+        loadUsername();
+        loadTypeAndSetDropdown();
+        loadAllMovies();
+    }
+
+    private void initViews(){
         menu = findViewById(R.id.menu);
         logout = findViewById(R.id.logout);
         movie = findViewById(R.id.movie);
@@ -60,19 +67,18 @@ public class MovieTypeActivity extends AppCompatActivity {
         movietype = findViewById(R.id.movietype);
         recyclerMovies = findViewById(R.id.recyclerViewTypes);
         searchEditText = findViewById(R.id.searchEditText);
-
-        searchEditText.setVisibility(View.GONE);
         db = FirebaseFirestore.getInstance();
-
         // Setup RecyclerView
         movieAdapter = new MovieAdapter(movieList, this::openDetail);
         recyclerMovies.setAdapter(movieAdapter);
         recyclerMovies.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerMovies.setVisibility(View.GONE);
+    }
 
+    private void setupListeners(){
+        searchEditText.setVisibility(View.GONE);
         // Setup Dropdown cho thể loại
         movietype.setOnClickListener(v -> movietype.showDropDown());
-
         menu.setOnClickListener(v -> openDrawer(drawerLayoutType));
         movie.setOnClickListener(v -> navigateTo(MovieSingleActivity.class));
         series.setOnClickListener(v -> navigateTo(MovieSeriesActivity.class));
@@ -82,13 +88,9 @@ public class MovieTypeActivity extends AppCompatActivity {
             FirebaseAuth.getInstance().signOut();
             navigateTo(LoginActivity.class);
         });
-
-        getUserInfo();
-        loadTypeAndSetDropdown();
-        loadAllMovies();
     }
 
-    private void getUserInfo() {
+    private void loadUsername() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             db.collection("users").document(user.getUid())
@@ -149,6 +151,7 @@ public class MovieTypeActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> Toast.makeText(this, "Lỗi tải phim: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
+
     private void loadMoviesByTypes(List<String> selectedTypeIds) {
         db.collection("MOVIES")
                 .get()

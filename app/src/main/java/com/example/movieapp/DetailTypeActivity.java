@@ -5,23 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.example.movieapp.model.Type;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.ArrayList;
 
 public class DetailTypeActivity extends AppCompatActivity {
     private EditText edtNameDetailType,edtNewNameDetailType;
@@ -37,15 +31,11 @@ public class DetailTypeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_detail_type);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-        getView();
-        event();
+
+        initViews();
+        setupListeners();
     }
-    public void getView(){
+    public void initViews(){
         edtNameDetailType = findViewById(R.id.edt_nameDetailType);
         edtNewNameDetailType = findViewById(R.id.edt_newnameDetailType);
         btnBack = findViewById(R.id.btn_backDetailType);
@@ -75,7 +65,6 @@ public class DetailTypeActivity extends AppCompatActivity {
         return true;
     }
 
-
     public void updateType(){
         //Dua du lieu can update
         id = idType;
@@ -87,14 +76,12 @@ public class DetailTypeActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void unused) {
                         Toast.makeText(context,"Sua thanh cong",Toast.LENGTH_LONG).show();
-
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(context,"Sua that bai",Toast.LENGTH_LONG).show();
-
                     }
                 });
     }
@@ -108,19 +95,17 @@ public class DetailTypeActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void unused) {
                         Toast.makeText(context,"Xoa thanh cong",Toast.LENGTH_LONG).show();
-
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Toast.makeText(context,"Xoa that bai",Toast.LENGTH_LONG).show();
-
                     }
                 });
     }
 
-    public void event(){
+    public void setupListeners(){
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,8 +1,6 @@
 package com.example.movieapp;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -17,8 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
-import com.example.movieapp.model.Episode;
-import com.example.movieapp.model.Movie;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,14 +33,22 @@ public class MovieDetailActivity extends AppCompatActivity {
     private String movieId;
     private FirebaseUser user;
     private FirebaseFirestore db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
+        initViews();
+        loadMovieData();
+        ifSeries();
+        favoriteMovie();
+        clickFavoriteMovie();
+    }
+
+    private void initViews(){
         db = FirebaseFirestore.getInstance();
         movieId = getIntent().getStringExtra("movieId");
-
         title = findViewById(R.id.detail_title);
         description = findViewById(R.id.detail_description);
         year = findViewById(R.id.detail_year);
@@ -53,15 +57,33 @@ public class MovieDetailActivity extends AppCompatActivity {
         btnPlay = findViewById(R.id.btnPlay);
         btnFavorite =findViewById(R.id.btnFavoriteMovie);
         episodesLayout = findViewById(R.id.episodesLayout);
+    }
 
+    private void setupListeners(){}
 
-
-        // Lấy dữ liệu từ Intent
+    private void loadMovieData(){
         Intent intent = getIntent();
+        String movieTitle = intent.getStringExtra("title");
+        String movieDesc = intent.getStringExtra("description");
+        int movieYear = intent.getIntExtra("year", 0);
+        String movieThumb = intent.getStringExtra("thumbnail");
+        ArrayList<String> genres = intent.getStringArrayListExtra("genres");
+        // Gán dữ liệu
+        title.setText(movieTitle);
+        description.setText(movieDesc);
+        year.setText(String.valueOf(movieYear));
+        Glide.with(this).load(movieThumb).into(thumbnail);
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
-        boolean isSeries = intent.getBooleanExtra("isSeries", false);
-        ArrayList<Episode> episodes = (ArrayList<Episode>) intent.getSerializableExtra("episodes"); // Nếu có
+        if (genres != null && !genres.isEmpty()) {
+            tvGenres.setText("Genres: " + String.join(", ", genres));  // Hiển thị các thể loại cách nhau bằng dấu phẩy
+        } else {
+            tvGenres.setText("Genres: Chưa có thông tin thể loại");
+        }
+    }
 
+    private void ifSeries(){
+        boolean isSeries = getIntent().getBooleanExtra("isSeries", false);
         if (isSeries) {
             btnPlay.setVisibility(View.GONE);
             // Truy vấn collection con EPISODES của movie đó
@@ -80,7 +102,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                                 String title = doc.getString("title");
                                 Long episodeNumber = doc.getLong("episodeNumber");
                                 String videoUrl = doc.getString("videoUrl");
-
                                 // Tạo nút Play cho mỗi tập
                                 Button episodeButton = new Button(this);
                                 episodeButton.setText(episodeNumber + ". " + title);
@@ -99,7 +120,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                                     playIntent.putExtra("videoUrl", videoUrl); // Gửi videoUrl của tập phim
                                     startActivity(playIntent);
                                 });
-
                                 episodesLayout.addView(episodeButton);
                             }
                         }
@@ -109,36 +129,12 @@ public class MovieDetailActivity extends AppCompatActivity {
                     });
         } else {
             btnPlay.setOnClickListener(v -> {
-                String videoUrl = intent.getStringExtra("videoUrl");
+                String videoUrl = getIntent().getStringExtra("videoUrl");
                 Intent playIntent = new Intent(MovieDetailActivity.this, PlayerActivity.class);
                 playIntent.putExtra("videoUrl", videoUrl);
                 startActivity(playIntent);
             });
         }
-
-        String movieTitle = getIntent().getStringExtra("title");
-        String movieDesc = getIntent().getStringExtra("description");
-        int movieYear = getIntent().getIntExtra("year", 0);
-        String movieThumb = getIntent().getStringExtra("thumbnail");
-
-        ArrayList<String> genres = intent.getStringArrayListExtra("genres");
-
-        if (genres != null && !genres.isEmpty()) {
-            tvGenres.setText("Genres: " + String.join(", ", genres));  // Hiển thị các thể loại cách nhau bằng dấu phẩy
-        } else {
-            tvGenres.setText("Genres: Chưa có thông tin thể loại");
-        }
-
-        // Gán dữ liệu
-        title.setText(movieTitle);
-        description.setText(movieDesc);
-        year.setText(String.valueOf(movieYear));
-        Glide.with(this).load(movieThumb).into(thumbnail);
-        user = FirebaseAuth.getInstance().getCurrentUser();
-
-        //Yêu thích phim
-        favoriteMovie();
-        clickFavoriteMovie();
     }
 
 
@@ -160,7 +156,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(this, "Lỗi tải favorite: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-
                     });
         }
     }
@@ -177,7 +172,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                             if (favorite == null) {
                                 favorite = new ArrayList<>();
                             }
-
                             if (isAdd) {
                                 // Thêm movieId vào danh sách nếu chưa có
                                 if (!favorite.contains(movieId)) {
@@ -187,7 +181,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                                 // Gỡ movieId ra khỏi danh sách nếu đã có
                                 favorite.remove(movieId);
                             }
-
                             // Cập nhật lại field favoriteMovie
                             db.collection("users").document(uid)
                                     .update("favoriteMovie", favorite)
@@ -210,7 +203,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                     });
         }
     }
-
 
     //click yeu thich phim
     public void clickFavoriteMovie() {
@@ -244,5 +236,4 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
     }
-
 }

@@ -2,7 +2,6 @@ package com.example.movieapp;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,14 +14,10 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.movieapp.adapter.EpisodeAdapter;
-import com.example.movieapp.adapter.MovieAdminAdapter;
 import com.example.movieapp.model.Episode;
 import com.example.movieapp.model.Movie;
 import com.example.movieapp.model.Type;
@@ -54,34 +49,16 @@ public class UpdateMovieActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_update_movie);
 
-        //ánh xạ và load các view...
-        init();
-
-        //hiện dialog chon the loai
-        tvSelectTypes.setOnClickListener(v -> showTypeSelectionDialog());
-
-        // nếu chọn phim bộ thì hiện ds tập, phim lẻ thi hiện link video của 1 tập duy nhất
-        chkIsSeries.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            edtVideoUrl.setVisibility(isChecked ? View.GONE : View.VISIBLE);
-            layoutEpisodeList.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-        });
-
-        // Thêm tập
-        btnAddEpisode.setOnClickListener(v -> showAddEpisodeDialog());
-
-        // Lưu phim
-        btnSaveMovie.setOnClickListener(v -> saveMovieToFirestore());
-
-        btnBackToAdmin.setOnClickListener(v -> {
-            startActivity(new Intent(UpdateMovieActivity.this, AdminActivity.class));
-            finish();
-        });
+        initViews();
+        loadTypes();
+        loadMovieTypes();
+        loadMovieInfoToView();
+        setupListeners();
     }
 
-    private void init(){
+    private void initViews(){
         // Khởi tạo Firestore
         db = FirebaseFirestore.getInstance();
-
         // Ánh xạ view
         edtTitle = findViewById(R.id.edtTitle);
         edtDescription = findViewById(R.id.edtDescription);
@@ -95,24 +72,28 @@ public class UpdateMovieActivity extends AppCompatActivity {
         btnSaveMovie = findViewById(R.id.btnSaveMovie);
         btnBackToAdmin = findViewById(R.id.btnBackToAdmin);
         tvSelectTypes = findViewById(R.id.tvSelectTypes);
-
         // Cài đặt RecyclerView cho tập phim
         episodeAdapter = new EpisodeAdapter(episodeList);
         rvEpisodes.setLayoutManager(new LinearLayoutManager(this));
         rvEpisodes.setAdapter(episodeAdapter);
-
         //nhan movie tu intent
         Intent intent = getIntent();
         movie = ( Movie) intent.getSerializableExtra("movie");
+    }
 
-        // Load thể loại
-        loadTypes();
-
-        //load ds the loai cua phim
-        loadMovieTypes();
-
-        //hien thi thong tin movie ra man hinh
-        loadMovieInfoToView();
+    private void setupListeners(){
+        tvSelectTypes.setOnClickListener(v -> showTypeSelectionDialog());
+        // nếu chọn phim bộ thì hiện ds tập, phim lẻ thi hiện link video của 1 tập duy nhất
+        chkIsSeries.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            edtVideoUrl.setVisibility(isChecked ? View.GONE : View.VISIBLE);
+            layoutEpisodeList.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
+        btnAddEpisode.setOnClickListener(v -> showAddEpisodeDialog());
+        btnSaveMovie.setOnClickListener(v -> saveMovieToFirestore());
+        btnBackToAdmin.setOnClickListener(v -> {
+            startActivity(new Intent(UpdateMovieActivity.this, AdminActivity.class));
+            finish();
+        });
     }
 
     private void loadMovieInfoToView(){
@@ -180,12 +161,10 @@ public class UpdateMovieActivity extends AppCompatActivity {
         //Tạo dialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Chọn thể loại");
-
         // Tạo LinearLayout để chứa CheckBox
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(16, 16, 16, 16);
-
         // Tạo danh sách CheckBox cho mỗi thể loại
         List<CheckBox> checkBoxList = new ArrayList<>();
         //tạo ds selected tạm thời copy từ ds selectedTypeList
@@ -206,7 +185,6 @@ public class UpdateMovieActivity extends AppCompatActivity {
             checkBoxList.add(checkBox);
             layout.addView(checkBox);//thêm checkBox vào layout
         }
-
         // Thêm LinearLayout vào Dialog
         ScrollView scrollView = new ScrollView(this);
         scrollView.addView(layout);
@@ -261,7 +239,6 @@ public class UpdateMovieActivity extends AppCompatActivity {
         String year = edtYear.getText().toString().trim();
         String thumbnail = edtThumbnail.getText().toString().trim();
         String videoUrl = chkIsSeries.isChecked() ? null : edtVideoUrl.getText().toString().trim();
-
         if (title.isEmpty() || description.isEmpty() || year.isEmpty() || thumbnail.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập đầy đủ thông tin phim!", Toast.LENGTH_SHORT).show();
             return;
@@ -285,7 +262,6 @@ public class UpdateMovieActivity extends AppCompatActivity {
         movie.setTypeId(selectedTypeIdList);
         movie.setTypeName(selectedTypeNameList);
         movie.setVideoUrl(videoUrl);
-
 // Then save the updated movie
         db.collection("MOVIES").document(movie.getId()).set(movie)
                 .addOnSuccessListener(aVoid -> {
@@ -332,8 +308,4 @@ public class UpdateMovieActivity extends AppCompatActivity {
                     }
                 });
     }
-
-
-
-
 }

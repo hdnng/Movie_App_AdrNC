@@ -1,12 +1,9 @@
 package com.example.movieapp;
 
 import android.content.pm.ActivityInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.MediaController;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,34 +17,29 @@ import java.util.regex.Pattern;
 
 public class PlayerActivity extends AppCompatActivity {
 
-    //yt
     private YouTubePlayerView youTubePlayerView;
     private String videoId;
-
-
-    //vv
-   // private VideoView v;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        initViews();
+        setupYouTubePlayer();
+    }
 
-
+    private void initViews(){
         youTubePlayerView = findViewById(R.id.youtube_player_view);
+    }
 
-        //vv
-//        v = findViewById(R.id.videoView);
+    private void setupYouTubePlayer(){
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         getLifecycle().addObserver(youTubePlayerView);
-
         String fullUrl = getIntent().getStringExtra("videoUrl"); // lấy link từ intent
         Log.d("PlayerActivity", "Full URL nhận: " + fullUrl);
-
         videoId = extractYoutubeVideoId(fullUrl);
         Log.d("PlayerActivity", "Video ID cắt được: " + videoId);
-
         youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
@@ -58,25 +50,8 @@ public class PlayerActivity extends AppCompatActivity {
                 }
             }
         });
-
-// vv
-//        if (fullUrl != null && !fullUrl.isEmpty()) {
-//            Uri uri = Uri.parse(fullUrl);
-//            v.setVideoURI(uri);
-//
-//            // Thêm MediaController để có nút Play, Pause, tua
-//            MediaController mediaController = new MediaController(this);
-//            mediaController.setAnchorView(v);
-//            v.setMediaController(mediaController);
-//
-//            // Bắt đầu phát
-//            v.start();
-//        } else {
-//            Toast.makeText(this, "Không có link video!", Toast.LENGTH_SHORT).show();
-//        }
     }
 
-    //yt
     private String extractYoutubeVideoId(String url) {
         if (url == null || url.trim().isEmpty()) return null;
         String pattern = "(?<=youtu.be/|watch\\?v=|/videos/|embed\\/)[^#\\&\\?]*";

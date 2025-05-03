@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerGenre1, recyclerGenre2, recyclerGenre3, recyclerGenre4;
     private TextView genreTitle1, genreTitle2, genreTitle3, genreTitle4;
     private FrameLayout featuredMovieContainer;
-
     private MovieAdapter adapterGenre1, adapterGenre2, adapterGenre3, adapterGenre4;
     private List<Movie> listGenre1, listGenre2, listGenre3, listGenre4;
     private FirebaseFirestore db;
@@ -56,6 +55,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initViews();
+        setupListeners();
+        loadUsername();
+        loadMovies();  // Thêm gọi hàm tải phim
+    }
+
+    private void initViews(){
         featuredMovieContainer = findViewById(R.id.featuredMovieContainer);
         genreTitle1 = findViewById(R.id.genreTitle1);
         genreTitle2 = findViewById(R.id.genreTitle2);
@@ -73,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         adapterGenre2 = new MovieAdapter(listGenre2, movie -> openDetail(movie));
         adapterGenre3 = new MovieAdapter(listGenre3, movie -> openDetail(movie));
         adapterGenre4 = new MovieAdapter(listGenre4, movie -> openDetail(movie));
-
         recyclerGenre1.setAdapter(adapterGenre1);
         recyclerGenre2.setAdapter(adapterGenre2);
         recyclerGenre3.setAdapter(adapterGenre3);
@@ -90,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
         favorite = findViewById(R.id.favorite);
         drawerLayout = findViewById(R.id.drawerLayout);
         hello = findViewById(R.id.hello);
-        menu.setOnClickListener(view -> openDrawer(drawerLayout));
-
         //search
         searchEditText = findViewById(R.id.searchEditText);
         recyclerSearchResults = findViewById(R.id.recyclerSearchResults);
@@ -99,7 +102,11 @@ public class MainActivity extends AppCompatActivity {
         searchAdapter = new MovieAdapter(new ArrayList<>(), movie -> openDetail(movie));
         recyclerSearchResults.setAdapter(searchAdapter);
         recyclerSearchResults.setVisibility(View.GONE); // Ban đầu ẩn đi
+        db = FirebaseFirestore.getInstance();
+    }
 
+    private void setupListeners(){
+        menu.setOnClickListener(view -> openDrawer(drawerLayout));
         movie.setOnClickListener(v ->{
             startActivity(new Intent(MainActivity.this, MovieSingleActivity.class));
             finish();
@@ -121,9 +128,20 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
         });
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
-        db = FirebaseFirestore.getInstance();
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterMovies(s.toString());
+            }
+            @Override
+            public void afterTextChanged(Editable s) { }
+        });
+    }
 
+    private void loadUsername(){
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String uid = user.getUid();
@@ -139,22 +157,6 @@ public class MainActivity extends AppCompatActivity {
                         hello.setText("Lỗi khi lấy thông tin người dùng");
                     });
         }
-
-        loadMovies();  // Thêm gọi hàm tải phim
-
-        searchEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterMovies(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) { }
-        });
-
     }
 
     private void filterMovies(String query) {
@@ -191,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
                 filteredList.add(movie);
             }
         }
-
         searchAdapter.setList(filteredList);
     }
 
@@ -205,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("videoUrl", movie.getVideoUrl());
         intent.putExtra("isSeries", movie.isSeries());
         intent.putStringArrayListExtra("genres", new ArrayList<>(movie.getTypeName()));
-
         startActivity(intent);
     }
 
@@ -278,12 +278,10 @@ public class MainActivity extends AppCompatActivity {
 
             ImageView img = view.findViewById(R.id.imgThumbnail);
             TextView title = view.findViewById(R.id.txtTitle);
-
             Glide.with(this)
                     .load(movie.getThumbnail())
                     .into(img);
             title.setText(movie.getTitle());
-
             // 👉 Bắt sự kiện click để mở chi tiết phim
             view.setOnClickListener(v -> openDetail(movie));
 
