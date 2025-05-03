@@ -23,13 +23,13 @@ import java.util.ArrayList;
 
 public class TypeActivity extends AppCompatActivity {
 
-    Button btnBack, btnCreateType;
-    ListView lvType;
-    Context context = this;
-    FirebaseFirestore database;
-    ArrayList<String> typeNames;
-    ArrayList<String> typeIds; // 👉 Thêm list id riêng
-    ArrayAdapter<String> adapter;
+    private Button btnBack, btnCreateType;
+    private ListView lvType;
+    private Context context = this;
+    private FirebaseFirestore database;
+    private ArrayList<String> typeNames;
+    private ArrayList<String> typeIds; // 👉 Thêm list id riêng
+    private ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

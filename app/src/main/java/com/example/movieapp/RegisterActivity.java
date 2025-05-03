@@ -19,11 +19,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText email, password, comfirmPassword, username;
-    Button btnRegister;
-    TextView txtLogin;
-    FirebaseAuth mAuth;
-    FirebaseFirestore db;
+    private EditText email, password, comfirmPassword, username;
+    private Button btnRegister;
+    private TextView txtLogin;
+    private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

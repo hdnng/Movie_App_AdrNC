@@ -35,18 +35,18 @@ import java.util.UUID;
 
 public class UpdateMovieActivity extends AppCompatActivity {
 
-    EditText edtTitle, edtDescription, edtYear, edtThumbnail, edtVideoUrl;
-    CheckBox chkIsSeries;
-    LinearLayout layoutEpisodeList;
-    RecyclerView rvEpisodes;
-    Button btnAddEpisode, btnSaveMovie, btnBackToAdmin;
-    TextView tvSelectTypes;
-    List<Episode> episodeList = new ArrayList<>();
-    EpisodeAdapter episodeAdapter;
-    List<Type> typeList = new ArrayList<>();
-    List<Type> selectedTypeList = new ArrayList<>();
-    FirebaseFirestore db;  // Firestore
-    Movie movie;
+    private EditText edtTitle, edtDescription, edtYear, edtThumbnail, edtVideoUrl;
+    private CheckBox chkIsSeries;
+    private LinearLayout layoutEpisodeList;
+    private RecyclerView rvEpisodes;
+    private Button btnAddEpisode, btnSaveMovie, btnBackToAdmin;
+    private TextView tvSelectTypes;
+    private List<Episode> episodeList = new ArrayList<>();
+    private EpisodeAdapter episodeAdapter;
+    private List<Type> typeList = new ArrayList<>();
+    private List<Type> selectedTypeList = new ArrayList<>();
+    private FirebaseFirestore db;  // Firestore
+    private Movie movie;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

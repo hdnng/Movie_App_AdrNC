@@ -31,19 +31,19 @@ import java.util.Set;
 
 public class MovieFavoriteActivity extends AppCompatActivity {
 
-    DrawerLayout drawerLayoutFavorite;
-    ImageView menu;
-    TextView hello;
+    private DrawerLayout drawerLayoutFavorite;
+    private ImageView menu;
+    private TextView hello;
 
     //Hiện Movie
-    RecyclerView recyclerView;
-    List<Movie> movieList;
-    MovieAdapter movieAdapter;
+    private RecyclerView recyclerView;
+    private List<Movie> movieList;
+    private MovieAdapter movieAdapter;
 
-    EditText searchEditText;
-    LinearLayout logout,movie,series,type,home;
-    FirebaseUser user;
-    FirebaseFirestore db;
+    private EditText searchEditText;
+    private LinearLayout logout,movie,series,type,home;
+    private FirebaseUser user;
+    private FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

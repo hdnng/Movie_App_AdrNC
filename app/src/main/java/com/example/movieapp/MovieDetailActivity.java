@@ -29,14 +29,14 @@ import java.util.List;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
-    TextView title, description, year, tvGenres;
-    ImageView thumbnail;
-    Button btnPlay;
-    ImageButton btnFavorite;
-    LinearLayout episodesLayout;
-    String movieId;
-    FirebaseUser user;
-    FirebaseFirestore db;
+    private TextView title, description, year, tvGenres;
+    private ImageView thumbnail;
+    private Button btnPlay;
+    private ImageButton btnFavorite;
+    private LinearLayout episodesLayout;
+    private String movieId;
+    private FirebaseUser user;
+    private FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

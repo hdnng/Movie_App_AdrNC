@@ -30,16 +30,16 @@ import java.util.List;
 import java.util.Set;
 
 public class MovieSingleActivity extends AppCompatActivity {
-    DrawerLayout drawerLayoutMovie;
-    ImageView menu;
-    TextView hello;
-    RecyclerView recyclerView;
-    List<Movie> movieList;
-    MovieAdapter movieAdapter;
-    EditText searchEditText;
-    LinearLayout logout,movie,series,type,favorite,home;
+    private DrawerLayout drawerLayoutMovie;
+    private ImageView menu;
+    private TextView hello;
+    private RecyclerView recyclerView;
+    private List<Movie> movieList;
+    private MovieAdapter movieAdapter;
+    private EditText searchEditText;
+    private LinearLayout logout,movie,series,type,favorite,home;
 
-    FirebaseFirestore db;
+    private FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

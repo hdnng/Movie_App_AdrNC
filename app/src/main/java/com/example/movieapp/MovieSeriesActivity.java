@@ -36,13 +36,13 @@ public class MovieSeriesActivity extends AppCompatActivity {
     EditText searchEditText;
 
     //Hiện Movie
-    RecyclerView recyclerView;
-    List<Movie> movieList;
-    MovieAdapter movieAdapter;
+    private RecyclerView recyclerView;
+    private List<Movie> movieList;
+    private MovieAdapter movieAdapter;
 
-    LinearLayout logout,movie,series,type,favorite,home;
+    private LinearLayout logout,movie,series,type,favorite,home;
 
-    FirebaseFirestore db;
+    private FirebaseFirestore db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

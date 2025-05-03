@@ -35,12 +35,12 @@ import java.util.Set;
 
 
 public class MainActivity extends AppCompatActivity {
-    DrawerLayout drawerLayout;
-    ImageView menu;
-    TextView  hello;
-    LinearLayout logout,movie,series,type,favorite;
+    private DrawerLayout drawerLayout;
+    private ImageView menu;
+    private TextView  hello;
+    private LinearLayout logout,movie,series,type,favorite;
     private List<Movie> allMovieList = new ArrayList<>();
-    EditText searchEditText;
+    private EditText searchEditText;
     private RecyclerView recyclerSearchResults;
     private MovieAdapter searchAdapter;
     private RecyclerView recyclerGenre1, recyclerGenre2, recyclerGenre3, recyclerGenre4;
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MovieAdapter adapterGenre1, adapterGenre2, adapterGenre3, adapterGenre4;
     private List<Movie> listGenre1, listGenre2, listGenre3, listGenre4;
-    FirebaseFirestore db;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

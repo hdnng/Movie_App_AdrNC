@@ -17,7 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class AdminActivity extends AppCompatActivity {
 
-    Button btnLogout, btnManageGenres, btnManageMovies, btnAddMovies;
+    private Button btnLogout, btnManageGenres, btnAddMovies;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

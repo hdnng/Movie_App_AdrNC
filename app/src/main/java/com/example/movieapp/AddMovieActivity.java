@@ -38,21 +38,21 @@ import java.util.UUID;
 
 public class AddMovieActivity extends AppCompatActivity {
 
-    EditText edtTitle, edtDescription, edtYear, edtVideoUrl;
-    CheckBox chkIsSeries;
-    LinearLayout layoutEpisodeList;
-    RecyclerView rvEpisodes;
-    Button btnAddEpisode, btnSaveMovie, btnBackToAdmin, btnSelectImage;
-    ImageView ivThumbnail;
-    TextView tvSelectTypes;
-    List<Episode> episodeList = new ArrayList<>();
-    EpisodeAdapter episodeAdapter;
-    List<Type> typeList = new ArrayList<>();
-    List<Type> selectedTypeList = new ArrayList<>();
-    FirebaseFirestore db;
+    private EditText edtTitle, edtDescription, edtYear, edtVideoUrl;
+    private CheckBox chkIsSeries;
+    private LinearLayout layoutEpisodeList;
+    private RecyclerView rvEpisodes;
+    private Button btnAddEpisode, btnSaveMovie, btnBackToAdmin, btnSelectImage;
+    private ImageView ivThumbnail;
+    private TextView tvSelectTypes;
+    private List<Episode> episodeList = new ArrayList<>();
+    private EpisodeAdapter episodeAdapter;
+    private List<Type> typeList = new ArrayList<>();
+    private List<Type> selectedTypeList = new ArrayList<>();
+    private FirebaseFirestore db;
 
-    Uri selectedImageUri;
-    ActivityResultLauncher<String> imagePickerLauncher;
+    private Uri selectedImageUri;
+    private ActivityResultLauncher<String> imagePickerLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

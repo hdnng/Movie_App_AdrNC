@@ -25,13 +25,13 @@ import java.util.UUID;
 
 public class CreateTypeActivity extends AppCompatActivity {
 
-    EditText edtNameType;
-    Button btnCreateType,btnbackCreateType;
+    private EditText edtNameType;
+    private Button btnCreateType,btnbackCreateType;
 
-    Context context = this;
-    FirebaseFirestore database;
-    String id ="";
-    Type type = null;
+    private Context context = this;
+    private FirebaseFirestore database;
+    private String id ="";
+    private Type type = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

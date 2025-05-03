@@ -24,16 +24,14 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 
 public class DetailTypeActivity extends AppCompatActivity {
-    EditText edtNameDetailType,edtNewNameDetailType;
-    Button btnBack,btnUpdate,btnDelete;
-    String idType ="";
-    String nameType ="";
-    Context context = this;
-    FirebaseFirestore database;
-    String id ="";
-    Type type = null;
-    ArrayList<String> typeNames;
-    ArrayAdapter<String> adapter;
+    private EditText edtNameDetailType,edtNewNameDetailType;
+    private Button btnBack,btnUpdate,btnDelete;
+    private String idType ="";
+    private String nameType ="";
+    private Context context = this;
+    private FirebaseFirestore database;
+    private String id ="";
+    private Type type = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

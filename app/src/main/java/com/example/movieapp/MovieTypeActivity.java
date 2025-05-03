@@ -33,7 +33,7 @@ public class MovieTypeActivity extends AppCompatActivity {
     private DrawerLayout drawerLayoutType;
     private ImageView menu;
     private TextView hello;
-    EditText searchEditText;
+    private EditText searchEditText;
     private AutoCompleteTextView movietype;
     private LinearLayout logout, movie, series, favorite, home;
     private RecyclerView recyclerMovies;
